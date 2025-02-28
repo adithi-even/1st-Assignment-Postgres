@@ -1,0 +1,47 @@
+import API from './api.js'
+
+
+  export const registerUser = async (userData) => {
+    try {
+
+        console.log("Sending Registration Data:", userData); // ✅ Debugging log
+
+        const response = await API.post("/user/register", userData); //through the API instance what we have created(i.e.,const API) we are getting the /user/register  and it is specifically for authentication (registering and logging in users).
+
+        console.log("Server Response:", response.data); // ✅ Log response
+
+      
+        return response.data;
+    } catch (error) {
+        console.error("Error registering user in authService.js/registeruser", error);
+        throw error;
+    }
+  };
+
+  export const loginUser = async (loginData) => {
+    try {
+
+      const response = await API.post("/user/login", loginData); //through the API instance what we have created(i.e.,const API) we are getting the /user/login  and it is specifically for authentication (registering and logging in users).
+      console.log("API Response:", response.data);
+
+      // ✅ Store token
+      localStorage.setItem("token", response.data.token);
+
+      if (response.data.account) { // ✅ Ensure 'account' exists
+          localStorage.setItem("role", response.data.account.role); // ✅ Store user role
+          localStorage.setItem("user", JSON.stringify(response.data.account)); // ✅ Store full user object
+      }
+
+      console.log("Stored User:in localStorage.getItem('user')", localStorage.getItem("user"));
+
+
+      return response.data;
+  } catch (error) {
+      console.error("Error logging in user in authService.js/loginUser", error);
+      throw error;
+  }
+};
+
+  export const logout = () => {
+    localStorage.removeItem('token');
+};
