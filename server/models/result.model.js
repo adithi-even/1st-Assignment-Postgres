@@ -4,32 +4,36 @@ import sequelize from "../config/sequelize";
 const resultModel = sequelize.define(
     "Result",
     {
+        id:{
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey:true,
+        },
         assessmentId:{
-            type: DataTypes.NUMBER,
+            type: DataTypes.UUID,
             allowNull:false,
+            references:{
+                model: "Assessment",
+                key: "id"
+            },
+            onDelete: "CASCADE",
         },
         userId:{
-            type: DataTypes.NUMBER,
+            type: DataTypes.UUID,
             allowNull:false,
-            
+            references:{
+                model: "User",
+                key: "id"
+            },
+            onDelete: "CASCADE",            
         },
         score:{
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull:false,
 
         },
-        answers:{
-            questionId:{
-                type:DataTypes 
-            },
-            selectedoptionIndex:{
-                type: DataTypes
-
-            },isCorrect:{
-                type: DataTypes
-            },
-        }
-    },{
+    },
+    {
         timestamps:true
     }
 )

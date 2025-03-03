@@ -1,14 +1,33 @@
 import { DataTypes } from "sequelize";
-import Sequelize from "../config/sequelize";
+import sequelize from "../config/sequelize";
+import User from "./user.model.js";
 
-const Assessment = Sequelize.define(
+const Assessment = sequelize.define(
     "Assessment",
     {
-        assessmentId:{
+        id:{
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
+        title:{
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+         createdBy:{
+            type: DataTypes.UUID,
+            alloweNull: false,
+            references:{
+                model: "User",
+                key: "id"
+            },
+            onDelete: "CASCADE",
+        },
         
+    },{
+        timestamps:true,
+        tableName: "assessments",
     }
 )
+
+export default Assessment;

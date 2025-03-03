@@ -1,0 +1,38 @@
+import { DataTypes } from "sequelize";
+import sequelize from "../config/sequelize";
+import Assessment from "./assessment.model.js";
+import Question from "./question.model.js";
+
+const AssessmentQuestion = sequelize.define(
+    "AssessmentQuestion",
+    {
+        id:{
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true,
+        },
+        assessmentId:{
+            type: DataTypes.UUID,
+            allowNull: false,
+            references:{
+                model: "Assessment",
+                key: "id"
+            },
+            onDelete: "CASCADE",
+        },
+        questionId:{
+            type:DataTypes.UUID,
+            allowNull: false,
+            references:{
+                model: "Question",
+                key: "id"
+            },
+            onDelete: "CASCADE",
+        }
+    },{
+        timestamps:true,
+        tableName: "assessment_questions",  
+    },
+);
+
+export default AssessmentQuestion;
