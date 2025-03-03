@@ -33,3 +33,5 @@ const resultModel = sequelize.define(
         timestamps:true
     }
 )
+
+export default resultModel;
