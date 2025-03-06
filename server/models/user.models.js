@@ -4,6 +4,11 @@ import sequelize from "../config/sequelize";
 const User = sequelize.define(
     "User",
     {
+        id:{
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey:true,
+        },
         username:{
             type: DataTypes.STRING,
             allowNull:false,
@@ -12,6 +17,10 @@ const User = sequelize.define(
         email:{
             type: DataTypes.STRING,
             allowNull:false,
+            unique:true,
+            validate:{
+                isEmail:true,
+            },
             
         },
         role:{
@@ -26,7 +35,7 @@ const User = sequelize.define(
         },
         refreshToken:{
             type: DataTypes.STRING,
-            allowNull:false,
+            allowNull:true,  //its better to mae it allowNull coz not all users are having refreshtoken in there local storage
 
         }
 
