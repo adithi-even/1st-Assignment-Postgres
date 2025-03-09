@@ -6,11 +6,11 @@ import Question from "./question.model.js";
 const AssessmentQuestion = sequelize.define(
     "AssessmentQuestion",
     {
-        id:{
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            primaryKey: true,
-        },
+        // id:{
+        //     type: DataTypes.UUID,
+        //     defaultValue: DataTypes.UUIDV4,
+        //     primaryKey: true,
+        // },
         assessmentId:{
             type: DataTypes.UUID,
             allowNull: false,
@@ -29,8 +29,9 @@ const AssessmentQuestion = sequelize.define(
             },
             onDelete: "CASCADE",
         }
-    },{
-        timestamps:true,
+    },
+    {
+        timestamps: false,
         tableName: "assessment_questions",  
     },
 );

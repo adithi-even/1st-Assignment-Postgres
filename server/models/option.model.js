@@ -29,7 +29,7 @@ const option = sequelize.define(
         },
 
     },{
-        timestamps: true,
+        timestamps: false,
         tableName: "options",
     }
 );

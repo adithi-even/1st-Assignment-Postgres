@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelize";
+import resultModel from "./result.model";
+import Question from "./question.model";
 
 const ResultAnswer = sequelize.define(
     "ResultAnswer",
@@ -18,6 +20,16 @@ const ResultAnswer = sequelize.define(
             },
             onDelete:"CASCADE",
         },
+        questionId:{
+            type:DataTypes.UUID,
+            allowNull:false,
+            references:{
+                model:"questions",
+                key:"id",
+            },
+            onDelete:"CASCADE",
+        },
+        sele
         
 
     }
