@@ -18,8 +18,31 @@ const ResultAnswer = sequelize.define(
             },
             onDelete:"CASCADE",
         },
+        questionId:{
+            type:DataTypes.UUID,
+            allownull:false,
+            references:{
+                model:"Question",
+                key:"id",
+            },
+            onDelete:"CASCADE",
+        },
+        selectedOptionIndex:{
+            type:DataTypes.INTEGER,
+            allownull:false,
+        },
+        isCorrect:{
+            type:DataTypes.BOOLEAN,
+            allownull:false,
+        },
         
 
+    },
+    {
+        timestamps: true,
+        tableName: "result_answers",
     }
 
-)
+);
+
+export default ResultAnswer;
