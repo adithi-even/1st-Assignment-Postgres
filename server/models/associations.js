@@ -1,19 +1,12 @@
-import Question from "./question.model";
-import Option from "./option.model";
+import User from './user.models';
+import Assessment from './assessment.models';
+import Question from './question.models';
+import Option from './option.models';
+import Result from './result.models';
+import ResultAnswer from './resultAnswer.models';
+import AssessmentQuestion from './assessmentQuestion.models';
 
+User.hasMany(Assessment, {foreignKey: 'createdBy'});
+Assessment.belongsTo(User, {foreignKey: 'createdBy'});
 
-//defining the associations here
-
-Question.hasMany(Option, {
-    foreignKey: "questionId",
-    as: "options",
-    onDelete: "CASCADE",
-});
-
-Option.belongsTo(Question, {
-    foreignKey: "questionId",
-    as: "question",
-}); 
-
-//exporting the models
-export { Question, Option };
+Assessment.belongsToMany(Question, {through: AssessmentQuestion, foreignKey: 'assessmentId'});
