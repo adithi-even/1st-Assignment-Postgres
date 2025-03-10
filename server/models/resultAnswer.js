@@ -1,5 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelize";
+import resultModel from "./result.model";
+import Question from "./question.model";
 
 const ResultAnswer = sequelize.define(
     "ResultAnswer",

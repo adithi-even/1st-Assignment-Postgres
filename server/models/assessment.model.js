@@ -16,7 +16,7 @@ const Assessment = sequelize.define(
         },
          createdBy:{
             type: DataTypes.UUID,
-            alloweNull: false,
+            allowNull: false,
             references:{
                 model: "User",
                 key: "id"

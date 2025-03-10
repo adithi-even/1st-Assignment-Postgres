@@ -9,15 +9,16 @@ const Question = sequelize.define(
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
-        text:{
-            type: DataTypes.TEXT,
+        question:{
+            type: DataTypes.STRING,
             allowNull: false,
         },
         correctoptionIndex:{
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-    },{
+    },
+    {
         timestamps:true,
         tebleName: "questions",
     }
