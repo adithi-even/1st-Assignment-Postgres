@@ -125,3 +125,29 @@ export const refreshToken = async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+
+// const generateToken = () ={
+
+// }
+
+// const generateRefreshToken = () ={
+
+// }
+
+// export const register = async (req, res) =>{
+
+// }
+
+// export const login = async (req, res) =>{
+
+// }
+
+// export const logout = async (req, res) =>{
+
+// }
+
+// export const refreshToken = async (req, res) =>{
+    
+// }
+
