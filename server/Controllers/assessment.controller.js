@@ -87,3 +87,18 @@ export const updateAssessment = async(res, req) => {
     }
 };
 
+export const deleteAssessment = async (req, res) => {
+    try {
+        const assessmentId = req.params.id;
+
+        const assessment = await Assessment.findById(assessmentId);
+
+        if(!assessment)return res.status(404).json({error: "Assessment not found"});
+        await assessment.destroy();
+        res.status(200).json({message:"Successfully deleted Assessment "});
+
+    } catch (error) {
+        res.status(500).json({message: "Couldn't delete assessment", error: error.message});
+    }
+
+}
