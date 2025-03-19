@@ -1,5 +1,6 @@
 import Result from '../models/result.models';
 import ResultAnswer from '../models/resultAnswer.models';
+import Assessment from '../models/assessment.models';
 
 export const submitResult = async (req, res) => {
     try {
@@ -62,3 +63,29 @@ export const getResultById = async (req, res) => {
     }
 
 };
+
+export const getAssessmentResults = async(res, req) => {
+    try {
+        const  { assessmentId } = req.params;
+
+        //finding the assessment from the database
+        const assessment = await Assessment.findbyPk(assessmentId);
+
+        if(!assessment){
+            return res.status(404).json({message:"Assessment not found"});
+        }
+
+
+        const results = await Result.findAll({
+            where: {assessmentId},
+            include: [
+                {}
+            ]
+        })
+
+    } catch (error) {
+        res.status(500).json({message:error.message});
+    }
+
+};
+
