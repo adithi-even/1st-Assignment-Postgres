@@ -1,5 +1,4 @@
 import Result from '../models/result.models';
-import ResultAnswer from '../models/resultAnswer.models';
 import Assessment from '../models/assessment.models';
 import resultAnswer from '../models/answer.models';
 
@@ -83,9 +82,7 @@ export const getResultById = async (req, res) => {
 export const getUserResults = async (req, res) => {
     try {
         const { userId } = req.params;
-
         //validate User
-
         const user = await user.findById(userId);
         if(!user)return res.status(401).json({message:"user not found"});
 
@@ -107,3 +104,37 @@ export const getUserResults = async (req, res) => {
 };
 
 
+export const getAssessmentResults = async (req, res) => {
+    try {
+        const { assessmentId } = req.params;
+
+        // Find all results related to the assessment
+        const results = await Result.findAll({
+            where: { assessmentId },
+            include: [
+                {
+                    model: User,
+                    attributes: ["id", "username", "email"], // Include user info
+                },
+                {
+                    model: Answer,
+                    include: [
+                        {
+                            model: Question,
+                            attributes: ["id", "question", "correctOptionIndex"], // Include question details
+                        },
+                    ],
+                },
+            ],
+        });
+
+        if (!results.length) {
+            return res.status(404).json({ message: "No results found for this assessment." });
+        }
+
+        res.json({ assessmentId, results });
+    } catch (error) {
+        console.error("Error fetching assessment results:", error);
+        res.status(500).json({ message: "Error fetching assessment results", error: error.message });
+    }
+};
