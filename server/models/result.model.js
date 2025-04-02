@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelize";
 import User from "./user.models";
-import Assessment from "./assessment.model";
+import Assessment from "./assessment.model.js";
 
 const resultModel = sequelize.define(
     "Result",
@@ -15,7 +15,7 @@ const resultModel = sequelize.define(
             type: DataTypes.UUID,
             allowNull:false,
             references:{
-                model: "assessment",
+                model: "Assessment",
                 key: "id"
             },
             onDelete: "CASCADE",
@@ -24,7 +24,7 @@ const resultModel = sequelize.define(
             type: DataTypes.UUID,
             allowNull:false,
             references:{
-                model: "users",
+                model: "Users",
                 key: "id"
             },
             onDelete: "CASCADE",            

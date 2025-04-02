@@ -1,7 +1,17 @@
-import express from 'express';
-import { sequelize } from 'sequelize';
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import dotenvConfig from "./config/dotenv.js";
+import sequelize from "./config/sequelize.js";
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/users.routes.js";
+import assessmentRoutes from "./routes/assessments.routes.js";
+import questionRoutes from "./routes/questions.routes.js";
+import resultRoutes from "./routes/results.routes.js";
 
+//initializes express app 
 
+const app = express();
 //Middelware
 
 app.use(cors());
@@ -19,8 +29,7 @@ app.use('/api/question', questionRoutes);
 app.use('/api/result', resultRoutes);
 
 //database
-
-sequelize.sync()
+Sequelize.sync()
 .then(()=>{
     console.log("Database connected successfully");
     

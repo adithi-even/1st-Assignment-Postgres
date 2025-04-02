@@ -1,5 +1,5 @@
 import express from 'express';
-import { getQuestions, getQuestionById, createQuestion, updateQuestion, deleteQuestion } from '../Controllers/questions.controller.js';
+import { getQuestions, getQuestionById, createQuestion, updateQuestion, deleteQuestion } from '../Controllers/question.controller.js';
 
 import authenticate from '../Middleware/authenticate.js';
 import authorize from '../Middleware/authorize.js';
