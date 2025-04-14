@@ -3,9 +3,6 @@ import { getAssessmentResults, getUserResults } from '../Controllers/result.cont
 import authorize from '../Middleware/authorize.js';
 import authenticate from '../Middleware/authenticate.js';
 
-
-
-
 const router = express.Router();
 
 router.get("/assessment/:assessmnetId", authenticate, authorize(["content_creator", "end_user"]), getAssessmentResults);
