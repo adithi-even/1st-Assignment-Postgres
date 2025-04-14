@@ -1,5 +1,5 @@
 import express from 'express';
-import  { createAssessment, getAssessments, getAssessmentById, updateAssessment, deleteAssessment} from '../Controllers/assessments.controller.js';
+import  { createAssessment, getAssessments, getAssessmentById, updateAssessment, deleteAssessment} from '../Controllers/assessment.controller.js';
 
 import authenticate from '../Middleware/authenticate.js';
 import authorize from '../Middleware/authorize.js';

@@ -1,6 +1,6 @@
-import Result from '../models/result.models';
-import Assessment from '../models/assessment.models';
-import resultAnswer from '../models/answer.models';
+import Result from '../models/result.model.js';
+import Assessment from '../models/assessment.model.js';
+import ResultAnswer from '../models/resultAnswer.js';
 
 export const submitResult = async (req, res) => {
     try {
@@ -30,7 +30,7 @@ export const submitResult = async (req, res) => {
                 selectedOptionidex: ans.selectedOptionIndex,
                 isCorrect: ans.iscorrect,
             }));
-            await resultAnswer.bulkCreate(formatedAnswers);
+            await ResultAnswer.bulkCreate(formatedAnswers);
         }
 
         res.status(201).json({message:"Result submitted Successfully", result});    

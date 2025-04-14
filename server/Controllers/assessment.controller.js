@@ -1,6 +1,6 @@
-import Assessment from "../models/assessment.model";
-import Question from "../models/question.model";
-import AssessmentQuestion from "../models/assessmentQuestions.model";
+import Assessment from "../models/assessment.model.js";
+import Question from "../models/question.model.js";
+import AssessmentQuestion from "../models/assessmentQuestions.model.js";
 
 export const createAssessment = async (req, res) => {
     try{
