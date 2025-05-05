@@ -6,7 +6,7 @@ import Result from './result.models';
 import ResultAnswer from './resultAnswer.models';
 import AssessmentQuestion from './assessmentQuestion.models';
  
-User.hasMany(Assessment, {foreignKey: 'createdBy'});
+User.hasMany(Assessment, {foreignKey: 'createdBy'}) ;
 Assessment.belongsTo(User, {foreignKey: 'createdBy'});
  
 Assessment.belongsToMany(Question, {through: AssessmentQuestion, foreignKey: 'assessmentId'});
