@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelize.js";
 import Question from "./question.model.js";
 
-const option = sequelize.define(
+const Option = sequelize.define(
     "Option",
     {
         id: {

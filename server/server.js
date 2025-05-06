@@ -8,13 +8,13 @@ import userRoutes from "./Routes/users.routes.js";
 import assessmentRoutes from "./Routes/assessments.routes.js";
 import questionRoutes from "./Routes/questions.routes.js";
 import resultRoutes from "./Routes/results.routes.js";
-import './models/Associations.model.js';
+import './models/index.model.js';
 
 //initializes express app 
 
 const app = express();
 
-//Middelware
+//Middleware
 
 app.use(cors());
 app.use(helmet());

@@ -1,10 +1,11 @@
-import User from './user.models';
-import Assessment from './assessment.models';
-import Question from './question.models';
-import Option from './option.models';
-import Result from './result.models';
-import ResultAnswer from './resultAnswer.models';
-import AssessmentQuestion from './assessmentQuestion.models';
+import sequelize from '../config/sequelize.js';
+import User from './user.model.js';
+import Assessment from './assessment.model.js';
+import Question from './question.model.js';
+import Option from './option.model.js';
+import Result from './result.model.js';
+import ResultAnswer from './resultAnswer.js';
+import AssessmentQuestion from './assessmentQuestions.model.js';
  
 User.hasMany(Assessment, {foreignKey: 'createdBy'}) ;
 Assessment.belongsTo(User, {foreignKey: 'createdBy'});
@@ -21,4 +22,4 @@ Assessment.hasMany(Result, {foreignKey: 'assessmentId'});
 Result.hasMany(ResultAnswer, {foreignKey: 'resultId', onDelete: 'CASCADE'});
 ResultAnswer.belongsTo(Result, {foreignKey: 'resultId'});
  
-export { User, Assessment, Question, Option, Result, ResultAnswer, AssessmentQuestion };
+export { sequelize, User, Assessment, Question, Option, Result, ResultAnswer, AssessmentQuestion };
