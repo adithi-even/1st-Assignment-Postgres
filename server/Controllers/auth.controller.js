@@ -114,7 +114,7 @@ export const refreshToken = async (req, res) =>{
 
             //generate new access token
             const newAccessToken = generateAccessToken(user);
-            res.json(200).json({accessToken: newAccessToken});
+            res.status(200).json({accessToken: newAccessToken});
         });
     } catch (error) {
         res.status(500).json({message:"Server error", error: error.message});
