@@ -47,7 +47,7 @@ export const login = async (req, res) =>{
         //check  if the user exists 
         const user = await User.findOne({where : {email}})
         if(!user){
-            return res.status(400).json({message: "User does not found", error: error.message});
+             res.status(400).json({message: "User does not found", error: error.message});
         }
 
         console.log("userrrr", user);
@@ -56,7 +56,7 @@ export const login = async (req, res) =>{
         
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch){
-           return res.status(400).json({message: "password doesn't match ", error: error.message});
+            res.status(400).json({message: "password doesn't match ", error: error.message});
         }
 
         console.log("isMatchhhhhhh", isMatch);
