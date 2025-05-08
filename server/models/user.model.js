@@ -13,7 +13,6 @@ const User = sequelize.define(
             type: DataTypes.STRING,
             allowNull:false,
             unique:true,
-            
         },
         email:{
             type: DataTypes.STRING,
@@ -21,13 +20,11 @@ const User = sequelize.define(
             unique:true,
             validate:{
                 isEmail:true,
-            },
-            
+            }, 
         },
         role:{
             type: DataTypes.ENUM('content_creator','end_user'),
             allowNull:false,
-            
         },
         password:{
             type: DataTypes.STRING,
@@ -36,10 +33,9 @@ const User = sequelize.define(
         },
         refreshToken:{
             type: DataTypes.STRING,
-            allowNull:true,  //its better to mae it allowNull coz not all users are having refreshtoken in there local storage
+            allowNull:true, 
 
         }
-
     },
     {
         timestamps: true,

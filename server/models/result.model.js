@@ -15,7 +15,7 @@ const resultModel = sequelize.define(
             type: DataTypes.UUID,
             allowNull:false,
             references:{
-                model: "Assessment",
+                model: "assessments",
                 key: "id"
             },
             onDelete: "CASCADE",
@@ -24,7 +24,7 @@ const resultModel = sequelize.define(
             type: DataTypes.UUID,
             allowNull:false,
             references:{
-                model: "Users",
+                model: "users",
                 key: "id"
             },
             onDelete: "CASCADE",            
@@ -32,11 +32,11 @@ const resultModel = sequelize.define(
         score:{
             type: DataTypes.INTEGER,
             allowNull:false,
-
         },
     },
     {
-        timestamps:true
+        timestamps:true,
+        tableName: "results"
     }
 )
 

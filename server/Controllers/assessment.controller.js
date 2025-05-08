@@ -10,7 +10,6 @@ export const createAssessment = async (req, res) => {
             createdBy,
         });
 
-    
         if (questionIds && questionIds.length > 0) {
             const questionMappings = questionIds.map(questionId => ({
                 assessmentId: newAssessment.id,
@@ -47,7 +46,7 @@ export const getAssessmentById = async (req, res) => {
 export const getAssessments = async (req, res) => {
     try {
         const assessments = await Assessment.findAll({
-            include: [Qquestion],
+            include: [Question],
         });
 
         res.json(assessments);

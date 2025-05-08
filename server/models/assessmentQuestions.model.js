@@ -15,7 +15,7 @@ const AssessmentQuestion = sequelize.define(
             type: DataTypes.UUID,
             allowNull: false,
             references:{
-                model: "Assessment",
+                model: "assessments",
                 key: "id"
             },
             onDelete: "CASCADE",
@@ -24,7 +24,7 @@ const AssessmentQuestion = sequelize.define(
             type:DataTypes.UUID,
             allowNull: false,
             references:{
-                model: "Question",
+                model: "questions",
                 key: "id"
             },
             onDelete: "CASCADE",

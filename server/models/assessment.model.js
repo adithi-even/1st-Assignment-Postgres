@@ -19,7 +19,7 @@ const Assessment = sequelize.define(
             type: DataTypes.UUID,
             allowNull: false,
             references:{
-                model: "User",
+                model: "users",
                 key: "id"
             },
             onDelete: "CASCADE",

@@ -12,5 +12,4 @@ router.get('/:id', authenticate, authorize("content_creator"),getQuestionById);
 router.post('/:id', authenticate, authorize("content_creator"), updateQuestion);
 router.post('/:id', authenticate, authorize("content_creator"), deleteQuestion);
 
-
 export default router;

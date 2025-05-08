@@ -10,13 +10,11 @@ const authenticate = async (req, res, next) => {
 
         if(!token){
             return res.status(401).json({message :"Access denied"})
-
         }
 
         const decoded  = jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET);
 
         console.log(decoded, "decodddeeeddd");
-        
 
         const user = await User.findByPk(decoded.id);
 

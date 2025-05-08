@@ -20,7 +20,7 @@ const Question = sequelize.define(
     },
     {
         timestamps:true,
-        tebleName: "questions",
+        tableName: "questions",
     }
 );
 

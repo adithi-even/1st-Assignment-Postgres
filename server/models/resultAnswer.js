@@ -15,7 +15,7 @@ const ResultAnswer = sequelize.define(
             type:DataTypes.UUID,
             allownull:false,
             references:{
-                model:"Result",
+                model:"results",
                 key:"id"
             },
             onDelete:"CASCADE",
@@ -24,7 +24,7 @@ const ResultAnswer = sequelize.define(
             type:DataTypes.UUID,
             allownull:false,
             references:{
-                model:"Question",
+                model:"questions",
                 key:"id",
             },
             onDelete:"CASCADE",
@@ -38,7 +38,6 @@ const ResultAnswer = sequelize.define(
             allownull:false,
         },
         
-
     },
     {
         timestamps: true,
