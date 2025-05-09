@@ -16,16 +16,21 @@ const authenticate = async (req, res, next) => {
 
         console.log(decoded, "decodddeeeddd");
 
-        const user = await User.findByPk(decoded.id);
+        const user = await User.findByPk(decoded?.id, {
+            attributes: {exclude: ['password', 'refreshToken']}
+        });
 
         if(!user){
             return res.status(404).json({message: "User not found"});
         }
 
         req.user = user;//attach user info to the request object
+
+        console.log("userrr", req.user.role);
+        
         next();
     } catch (error) {
-        return res.status(500).json({message: "Server error", error: error.message});
+        return res.status(401).json({message: "Server error", error: error.message});
     }
 };
 

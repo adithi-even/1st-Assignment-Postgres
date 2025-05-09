@@ -1,17 +1,47 @@
-import axios from 'axios';
+import API from './api.js'
 
-const API_URL = 'http://localhost:5000/api/auth/';//adjust based on the backend route
 
-export const login = async (credentials) => {
-   const response = await axios.post(`${API_URL}/login`, credentials);
-   return response.data;
-} //here credentials is an object which contains email and the passsword,
+  export const registerUser = async (userData) => {
+    try {
 
-export const register = async(userData) => {
-    const response = await axios.post(`${API_URL}/register`, userData);
-    return response.data;
-}
+        console.log("Sending Registration Data:", userData); // ✅ Debugging log
 
-export const logout = async() => {
-    return axios.post(`${API_URL}/logout`);
-}
+        const response = await API.post("/user/register", userData); //through the API instance what we have created(i.e.,const API) we are getting the /user/register  and it is specifically for authentication (registering and logging in users).
+
+        console.log("Server Response:", response.data); // ✅ Log response
+
+      
+        return response.data;
+    } catch (error) {
+        console.error("Error registering user in authService.js/registeruser", error);
+        throw error;
+    }
+  };
+
+  export const loginUser = async (loginData) => {
+    try {
+
+      const response = await API.post("/user/login", loginData); //through the API instance what we have created(i.e.,const API) we are getting the /user/login  and it is specifically for authentication (registering and logging in users).
+      console.log("API Response:", response.data);
+
+      // ✅ Store token
+      localStorage.setItem("token", response.data.token);
+
+      if (response.data.account) { // ✅ Ensure 'account' exists
+          localStorage.setItem("role", response.data.account.role); // ✅ Store user role
+          localStorage.setItem("user", JSON.stringify(response.data.account)); // ✅ Store full user object
+      }
+
+      console.log("Stored User:in localStorage.getItem('user')", localStorage.getItem("user"));
+
+
+      return response.data;
+  } catch (error) {
+      console.error("Error logging in user in authService.js/loginUser", error);
+      throw error;
+  }
+};
+
+  export const logout = () => {
+    localStorage.removeItem('token');
+};

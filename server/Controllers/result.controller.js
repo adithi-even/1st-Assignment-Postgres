@@ -78,7 +78,6 @@ export const getResultById = async (req, res) => {
 
 };
 
-
 export const getUserResults = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -102,7 +101,6 @@ export const getUserResults = async (req, res) => {
         res.status(500).json({message:"internal server error "});
     }
 };
-
 
 export const getAssessmentResults = async (req, res) => {
     try {

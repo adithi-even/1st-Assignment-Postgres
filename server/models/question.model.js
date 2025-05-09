@@ -13,7 +13,7 @@ const Question = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        correctoptionIndex:{
+        correctOptionIndex:{
             type: DataTypes.INTEGER,
             allowNull: false,
         },

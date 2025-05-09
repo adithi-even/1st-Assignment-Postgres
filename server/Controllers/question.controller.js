@@ -11,6 +11,9 @@ export const createQuestion = async (req, res) => {
 
         const newQuestion = await Question.create({ question, correctOptionIndex });
 
+        console.log("Newly created question:", newQuestion);
+        console.log("Newly created question ID:", newQuestion.id);        
+
         if(options && options.length > 0){
           const optionData  = options.map((text, index) => ({
             text,
@@ -24,6 +27,8 @@ export const createQuestion = async (req, res) => {
             include: [Option]
         });
 
+        console.log("createdQuestion....", createQuestion);
+        
         res.status(201).json({ message: "Question created successfully" }, createdQuestion);
         
     } catch (error) {

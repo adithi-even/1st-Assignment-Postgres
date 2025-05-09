@@ -79,9 +79,14 @@ export const login = async (req, res) =>{
 export const logout = async (req, res) =>{
     try {
         const user = await User.findByPk(req.user.id);
+        
+        console.log("loggout", user);
+
         if(!user){
            return res.status(400).json({message: "User not found"});
         }
+
+        
 
         //remove the refresh token from the db because we are logging out
         user.refreshToken = null;
@@ -89,6 +94,8 @@ export const logout = async (req, res) =>{
 
         res.status(200).json({message:"Successfully logged out"});
     } catch (error) {
+
+        console.error("Error during logout:", error);
         res.status(400).json({message:"Error logging out "})
     }
 

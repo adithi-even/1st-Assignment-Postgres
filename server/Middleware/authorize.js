@@ -4,6 +4,9 @@ const authorize = (roles = []) => {
 
             return res.status(401).json({message:"Unauthorized"});
         }
+
+        console.log("roleeeeeeeeeeeeee", req.user.role);
+        
         next();
     };
 };
