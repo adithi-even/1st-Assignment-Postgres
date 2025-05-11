@@ -7,7 +7,7 @@ const QuestionCreationPage = () => {
     const [questionData, setQuestionData] = useState({
         question: '',
         options: ['', '', '', ''],
-        correctOptionIndex: 0
+        correctoptionIndex: 0
     });
 
     const [ questions, setQuestions] = useState([]);
@@ -68,7 +68,7 @@ const QuestionCreationPage = () => {
                 setQuestionData({
                     question: '',
                     options: ['', '', '', ''],
-                    correctOptionIndex: 0
+                    correctoptionIndex: 0
                 });
 
                 fetchQuestions();
@@ -101,7 +101,7 @@ const QuestionCreationPage = () => {
                         <div key={q._id || index} style={styles.questionItem}>
                             <h3>{q.question}</h3>
                             <p><strong>Options:</strong>{q.options && Array.isArray(q.options) ? q.options.join(', ') :'No options available'}</p>
-                            <p><strong>Correct Option:</strong>{q.options && q.options[q.correctOptionIndex] ? q.options[q.correctOptionIndex]  : 'No correct option Added'}</p>
+                            <p><strong>Correct Option:</strong>{q.options && q.options[q.correctoptionIndex] ? q.options[q.correctoptionIndex]  : 'No correct option Added'}</p>
 
                         </div>
                     ))
@@ -145,9 +145,9 @@ const QuestionCreationPage = () => {
                         ))}
 
                         <select
-                            name="correctOptionIndex"
+                            name="correctoptionIndex"
                             onChange={handleChange}
-                            value={questionData.correctOptionIndex}
+                            value={questionData.correctoptionIndex}
                             style={styles.select}
                         >
                             {questionData.options.map((_, index) => (

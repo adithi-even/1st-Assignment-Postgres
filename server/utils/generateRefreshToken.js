@@ -7,7 +7,3 @@ const generateRefreshToken = (user) =>{
 };
 
 export default generateRefreshToken; //Refresh tokens allow users to obtain new access tokens without needing to re-authenticate, providing a seamless user experience.
-
-
-
-

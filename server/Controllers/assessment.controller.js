@@ -5,19 +5,38 @@ import AssessmentQuestion from "../models/assessmentQuestions.model.js";
 export const createAssessment = async (req, res) => {
     try{
         const {title, createdBy, questionIds} = req.body;
+        console.log("req.body.questionIds:", req.body.questionIds);
+
+        const existing = await Assessment.findOne({ where: { title, createdBy } });
+        if (existing) {
+            return res.status(400).json({ message: "Assessment already exists. Try with the different title or different creator " });
+        }
+
+
         const newAssessment = await Assessment.create({
             title,
-            createdBy,
+            createdBy
         });
+        console.log("newAssessment.id:", newAssessment.id);        
+        console.log("newAssessmenttttttttt", newAssessment);        
+        console.log(questionIds.length,"length");
+        
 
+        
         if (questionIds && questionIds.length > 0) {
+              console.log("Inside the if block - questionIds:", questionIds);
             const questionMappings = questionIds.map(questionId => ({
                 assessmentId: newAssessment.id,
                 questionId,
             }));
+             console.log("Attempting to create AssessmentQuestion mappings:", questionMappings);
             await AssessmentQuestion.bulkCreate(questionMappings);
+        }else {
+            console.log("questionIds is either null/undefined or empty:", questionIds); // Log if the if condition fails
         }
-        res.status(201).json(newAssessment);
+
+            res.status(201).json({ message: "Assessment created", assessment: newAssessment });
+    
     }
     catch (error) {
         res.status(500).json({message: error.message});
@@ -46,7 +65,12 @@ export const getAssessmentById = async (req, res) => {
 export const getAssessments = async (req, res) => {
     try {
         const assessments = await Assessment.findAll({
-            include: [Question],
+            include: [
+                {
+                    model: Question,
+                    as: 'Questions'
+                }
+            ],
         });
 
         res.json(assessments);
@@ -89,8 +113,12 @@ export const updateAssessment = async(res, req) => {
 export const deleteAssessment = async (req, res) => {
     try {
         const assessmentId = req.params.id;
+        console.log(assessmentId,"delete assessment id");
+        
 
-        const assessment = await Assessment.findById(assessmentId);
+        const assessment = await Assessment.findByPk(assessmentId);
+        console.log(assessment,"delete assessment ");
+        
 
         if(!assessment)return res.status(404).json({error: "Assessment not found"});
         await assessment.destroy();

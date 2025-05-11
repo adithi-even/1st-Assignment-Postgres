@@ -1,6 +1,9 @@
 import Result from '../models/result.model.js';
 import Assessment from '../models/assessment.model.js';
 import ResultAnswer from '../models/resultAnswer.js';
+import User from '../models/user.model.js';
+import Question from '../models/question.model.js';
+import Option from '../models/option.model.js';
 
 export const submitResult = async (req, res) => {
     try {
@@ -12,7 +15,7 @@ export const submitResult = async (req, res) => {
             return res.status(404).json({message: "Assessment not found"});
         }
 
-        const user = await user.findByPk(userId);
+        const user = await User.findByPk(userId);
         if(!user){
             return res.status(404).json({message:"User not found"});
         }
@@ -25,10 +28,10 @@ export const submitResult = async (req, res) => {
 
         if(answers && answers.length > 0){
             const formatedAnswers = answers.map(ans => ({
-                resultId: result.id,
+                resultId: result.id,    
                 questionId: ans.questionId,
-                selectedOptionidex: ans.selectedOptionIndex,
-                isCorrect: ans.iscorrect,
+                selectedOptionIndex: ans.selectedOptionIndex,
+                isCorrect: ans.isCorrect,
             }));
             await ResultAnswer.bulkCreate(formatedAnswers);
         }
@@ -45,24 +48,33 @@ export const submitResult = async (req, res) => {
 //get specific result by resultId
 export const getResultById = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { resultId } = req.params;
 
-        const result = await Result.findByPk(id, {
+        console.log("Params received:", req.params);
+
+
+        const result = await Result.findByPk(resultId, {
             include: [
                 {
                     model: Assessment, 
                     attributes: ['id', 'title']
                 },
                 {
-                    model:'User',
+                    model:User,
                     attributes:['id','username','email']
                 },
                 {
-                    model: Answer,
+                    model: ResultAnswer,
                     include:[
                         {
                             model:Question,
-                            attributes:['question','options','correctOptionIndex']
+                            attributes:['question','correctoptionIndex'],
+                            include:[
+                                {
+                                    model: Option,
+                                    attributes:['id', 'text', 'isCorrect']
+                                }
+                            ]
                         }
                     ],
                 }
@@ -82,7 +94,7 @@ export const getUserResults = async (req, res) => {
     try {
         const { userId } = req.params;
         //validate User
-        const user = await user.findById(userId);
+        const user = await User.findByPk(userId);
         if(!user)return res.status(401).json({message:"user not found"});
 
         const results = await Result.findAll({
@@ -115,11 +127,11 @@ export const getAssessmentResults = async (req, res) => {
                     attributes: ["id", "username", "email"], // Include user info
                 },
                 {
-                    model: Answer,
+                    model: ResultAnswer,
                     include: [
                         {
                             model: Question,
-                            attributes: ["id", "question", "correctOptionIndex"], // Include question details
+                            attributes: ["id", "question", "correctoptionIndex"], // Include question details
                         },
                     ],
                 },

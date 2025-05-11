@@ -8,10 +8,10 @@ const router = express.Router();
 
 //Routes for assessments
 
-router.post('/', authenticate, authorize("content_creator"), createAssessment);
-router.get('/', authenticate, authorize("content_creator"), getAssessments);
-router.get('/:id', authenticate, getAssessmentById);
-router.put('/:id', authenticate, authorize("content_creator"), updateAssessment);
-router.delete('/:id', authenticate, authorize("content_creator"), deleteAssessment);
+router.post('/', authenticate, authorize("content_creator"), createAssessment); //
+router.get('/', authenticate, authorize("content_creator"), getAssessments); //
+router.get('/:id', authenticate, getAssessmentById); //
+router.put('/:id', authenticate, authorize("content_creator"), updateAssessment); //
+router.delete('/:id', authenticate, authorize("content_creator"), deleteAssessment); //
 
 export default router;

@@ -7,8 +7,10 @@ const Option = sequelize.define(
     {
         id: {
             type: DataTypes.UUID,
-            defaultvalue: DataTypes.UUIDV4,
-            primaryKey: true
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true,
+            allowNull: false
+
         },
         text: {
             type: DataTypes.STRING,
