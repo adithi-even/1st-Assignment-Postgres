@@ -16,7 +16,6 @@ import ProtectedRoute from "./components/Auth/ProtectedRoute"; // Import protect
 
 function App() {
 
-
   return (
     <BrowserRouter>
       <Routes>
@@ -27,7 +26,7 @@ function App() {
 
         {/* Protected Routes for End Users */}
         <Route element={<ProtectedRoute allowedRoles={['end_user']} />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/user-dashboard" element={<Dashboard />} />
           <Route path="/test/:assessmentId" element={<TestPage />} />
           <Route path="/results/:resultId" element={<ResultsPage />} />
         </Route>
@@ -39,7 +38,6 @@ function App() {
           <Route path="/questions" element={<QuestionCreationPage />} />
         </Route>
 
-       
       </Routes>
    </BrowserRouter>
   );

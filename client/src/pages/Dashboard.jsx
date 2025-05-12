@@ -1,6 +1,6 @@
 //enduser page
 import React, { useState, useEffect } from "react";
-import { getAssessments } from '../services/assessmentService';
+import  { getAssessments }  from '../services/assessmentService';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {

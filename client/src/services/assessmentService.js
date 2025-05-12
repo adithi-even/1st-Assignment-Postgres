@@ -27,7 +27,7 @@ export const getAssessments = async () => {
             headers:{Authorization: `Bearer ${token}`},
         });
         
-        return response.data.assessments;
+        return response.data;
         
     } catch (error) {
         console.log("assessmentService => getAssessments Error:" , error);

@@ -1,6 +1,9 @@
 //cc page
 import React, { useState, useEffect } from 'react';
+import { getQuestions }  from '../services/questionService.js';
+import { getAssessments } from '../services/assessmentService.js'
 import axios from 'axios';
+import API from '../services/api';
 
 const AssessmentCreationPage = () => {
   const [questions, setQuestions] = useState([]);
@@ -8,83 +11,43 @@ const AssessmentCreationPage = () => {
   const [title, setTitle] = useState('');
   const [message, setMessage] = useState('');
   const [assessments,setAssesments] = useState([]);
-  // const [users, setUsers] = useState([])
 
   const fetchQuestions = async () => {
     try {
-      const token = localStorage.getItem('token');
-      console.log("Fetching questions..."); // Debugging log
+      const data = await getQuestions();
+      console.log("Fetched questions:", data);  // Debugging log
 
-      const response = await axios.get("http://localhost:5000/api/questions", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      // console.log("Fetching Questions:",response.data.questions);
-      console.log("Fetching Questions:",response.data);
-
-      if (Array.isArray(response.data)) {
-        setQuestions(response.data);
-      } else if (response.data.questions && Array.isArray(response.data.questions)) {
-          setQuestions(response.data.questions);
+      if (data[0]?.questions && Array.isArray(data[0].questions)) {
+          setQuestions(data[0].questions);
+          console.log(data[0].questions,"data.questions");
+          
       } else {
-          console.error("Unexpected data format:", response.data);
+          console.error("Unexpected data format:", data);
           setQuestions([]); 
       }
             
     } catch (error) {
       console.error('Error fetching questions:', error);
+      setMessage(`Failed to fetch questions: ${error.message}`); 
     }
   };
 
   const fetchAssessments = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const response = await getAssessments();
+      console.log("Fetched assessments:", response);
 
-      const response = await axios.get("http://localhost:5000/api/assessments", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-
-      if(Array.isArray(response.data)){
+      if(response?.data && Array.isArray(response.data)){
         setAssesments(response.data);
-      }else if(response.data.assessments && Array.isArray(response.data.assessments)){
-        setAssesments(response.data.assessments);
       }else{
         console.error("Unexpected data format",response.data);
         setAssesments([]);
       }        
     } catch (error) {
       console.error("Error fetching Assessments", error);
-      
-      
+      setMessage(`Failed to fetch Assessments: ${error.message}`); 
     }
   };
-
-  // const fetchUsers = async () => {
-  //   try {
-  //     const token = localStorage.getItem('token');
-
-  //     const response = await axios.get("http://localhost:5000/api/users", {
-  //       headers: { Authorization: `Bearer ${token}` }
-  //     });
-
-  //     console.log(response,"rrrr");
-      
-  //     const userMap = {} ;
-  //     response.data.forEach(user => {
-  //       userMap[user._id] = user;
-  //     });
-
-  //     setUsers(userMap);  // Save to state
-  //     console.log("userMap", userMap);
-      
-
-  //   } catch (error) {
-  //     console.error("Error fetching the createdBy users in the asssessment CreationPage", error.message);
-      
-  //   }
-  // };
-
 
   useEffect(() => {
     fetchAssessments();
@@ -123,7 +86,7 @@ const AssessmentCreationPage = () => {
       createdBy: userId  
     };
 
-    console.log("assessment created req.body:", requestBody);
+    console.log("assessment created requestBody:", requestBody);
 
     try {
       const token = localStorage.getItem('token');
@@ -151,22 +114,18 @@ const AssessmentCreationPage = () => {
       <h3 style={styles.subheading}>Created Assessments:</h3>
     <div style={styles.container2}>
 
-      <div style={styles.assessmentItem}>
-          {assessments.length > 0 ? (
-              assessments.map((assessment, index) => (
-                  <div key={assessment._id} style={styles.assessmentItem}>
-                      <h4>{index + 1}. {assessment.title}</h4>
-                      <p><strong>Questions.</strong> {assessment.questions.length}</p>
-                  </div>
-              ))
-
-
-             
-          ) : (
-              <p style={styles.noAssessments}>No assessments created yet.</p>
-          )}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {assessments.length > 0 ? (
+          assessments.map((assessment, index) => (
+            <div key={assessment._id || index} style={styles.assessmentItem}>
+              <h4>{index + 1}. {assessment.title}</h4>
+              <p><strong>Questions:</strong> {assessment.questions.length}</p>
+            </div>
+          ))
+        ) : (
+          <p style={styles.noAssessments}>No assessments created yet.</p>
+        )}
       </div>
-
 
 
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -183,9 +142,9 @@ const AssessmentCreationPage = () => {
         <h3 style={styles.subheading}>Select Questions:</h3>
         <div style={styles.questionList}>
           {questions && questions.length > 0 ? (
-            questions.map((question) => (
-              <div key={question._id} style={styles.questionItem}>
-                <label style={styles.label}>
+            questions.map((question, index) => (
+              <div key={question._id || index} style={styles.questionItem}>
+                <label  style={styles.label}>
                   <input
                     type="checkbox"
                     checked={selectedQuestions.includes(question._id)}
@@ -210,8 +169,6 @@ const AssessmentCreationPage = () => {
       
     </div>
   );
-
-  
 };
 
 const styles = {
@@ -299,7 +256,6 @@ const styles = {
   },
   assessmentItem:{
     flexDirection:'column',
-
   }
 };
 

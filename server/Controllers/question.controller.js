@@ -9,7 +9,7 @@ export const createQuestion = async (req, res) => {
             return res.status(400).json({ message: "Options are required and must be at least 4" });
         }
 
-        const newQuestion = await Question.create({ question, correctoptionIndex });
+        const newQuestion = await Question.create({ question, options, correctoptionIndex });
 
         console.log("Newly created question:", newQuestion);
         console.log("Newly created question ID:", newQuestion.id);        
@@ -57,7 +57,13 @@ export const getQuestionById = async (req, res) => {
 export const getQuestions = async (req, res ) => {
     try {
         const questions = await Question.findAll({
-            include:[Option]
+            include:[
+                {
+                    model: Option,
+                    as: 'options',
+                    attributes: ['text', 'isCorrect', 'id'], // or include 'id' if needed
+                },
+            ]
         });
 
         if(!questions || questions.length === 0 ){
@@ -130,7 +136,13 @@ export const updateQuestion = async (req, res ) => {
         }
 
         const updatedQuestion = await Question.findByPk(id, {
-            include:[Option]
+            include:[
+                {
+                    model: Option,
+                    as: 'options',
+                    attributes: ['text', 'isCorrect', 'id'], // or include 'id' if needed
+                },
+            ]
         });
 
         res.status(200).json({message:"Questions updated successfullly ", updatedQuestion});

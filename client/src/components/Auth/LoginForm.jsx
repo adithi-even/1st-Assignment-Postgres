@@ -24,9 +24,10 @@ function LoginForm() {
 
         if(data.account && data.account.role){          
           
-            localStorage.setItem("token", data.token); 
+            localStorage.setItem("token", data.accessToken); 
             localStorage.setItem("user", JSON.stringify(data.account)); 
             localStorage.setItem("role",data.account.role); //storing the role of the user so that we can use it in the redirection of the dashboard
+            console.log("data:", data);
             console.log("Stored Role:", localStorage.getItem("role"));
             console.log("Stored User:", localStorage.getItem("user"));
             console.log("Stored token:", localStorage.getItem("token"));
@@ -38,8 +39,8 @@ function LoginForm() {
                 navigate("/cc-dashboard"); //redirect to CC dashboard
                 
               } else {
-                console.log("Navigating to /dashboard...");
-                navigate("/dashboard");//redirect to end user
+                console.log("Navigating to /user-dashboard...");
+                navigate("/user-dashboard");//redirect to end user
               }
 
         }

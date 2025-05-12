@@ -29,6 +29,7 @@ Question.belongsToMany(Assessment, {
  
 Question.hasMany(Option, {
     foreignKey: 'questionId',
+    as: "options",
     onDelete: 'CASCADE'
 });
 Option.belongsTo(Question, {

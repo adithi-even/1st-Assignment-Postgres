@@ -1,9 +1,10 @@
 import express from 'express';
-import authenticate from '../Middleware/authenticate';
+import authenticate from '../Middleware/authenticate.js';
+import getDashboardData from '../Controllers/dashboard.controller.js';
 
 const router = express.Router();
 
-router.get('/', authenticate, getDashboardData);
+router.get('/user-dashboard', authenticate, getDashboardData);
 
 
 

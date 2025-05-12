@@ -28,13 +28,16 @@ const RegisterForm = () => {
 
       setMessage(data.message);
 
-       if (data.newAccount && data.newAccount.role) { // ✅ Ensure `user` exists in response
-            if (data.newAccount.role === "content_creator") {
-                navigate("/cc-dashboard"); // Redirect Content Creator
-            } else {
-              console.log("Response Data:", data);
+       if (data.user && data.user.role) { // ✅ Ensure `user` exists in response
+        localStorage.setItem("role", data.user.role);
 
-                navigate("/dashboard"); // Redirect End User
+            if (data.user.role === "content_creator") {
+                navigate("/cc-dashboard"); // Redirect Content Creator
+              } else {
+                console.log("Response Data:", data);
+                navigate("/user-dashboard"); // Redirect End User
+                console.log("navigating to user-dashboard ");
+
             }
         } else {
             console.error("Unexpected Response Format:", data);

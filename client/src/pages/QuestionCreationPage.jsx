@@ -4,6 +4,8 @@ import { createQuestion, getQuestions } from '../services/questionService.js'
 
 const QuestionCreationPage = () => {
 
+    
+
     const [questionData, setQuestionData] = useState({
         question: '',
         options: ['', '', '', ''],
@@ -13,14 +15,21 @@ const QuestionCreationPage = () => {
     const [ questions, setQuestions] = useState([]);
     const [ showModal, setShowModal] = useState(false);
 
+    console.log("questions", questions);
+ 
     const fetchQuestions = async () =>{
         try {
                 const data = await getQuestions();
-                console.log("Fetched questions:", data); 
+                console.log("Fetched questions:", data[0].questions[2].id); 
+                console.log("Fetched questions:", data[0].questions[2].question); 
+                console.log("Fetched questions:", data[0].questions[2].correctoptionIndex); 
                 
-                // setQuestions(data || []);
-                if (Array.isArray(data[0].questions)) {
-                    setQuestions(data[0].questions);
+                if (Array.isArray(data[0]?.questions)) {
+                    const sortedQuestions = [...data[0].questions].sort((a, b) => 
+                        new Date(b.createdAt) - new Date(a.createdAt)
+                    );
+                    // setQuestions(data[0].questions);
+                    setQuestions(sortedQuestions);
                 } else {
                     console.error("Data fetched is not an array:", data);
                     setQuestions([]);
@@ -29,15 +38,11 @@ const QuestionCreationPage = () => {
                 console.error("error fetchisng questions", error);
                 
             }
-
         };
-    
 
     useEffect(() => {
         fetchQuestions();
     },[]);
-
- 
 
     const handleChange = (e , index = null) => {
         if (index !== null) {
@@ -54,15 +59,13 @@ const QuestionCreationPage = () => {
         e.preventDefault();
 
         try {
-            console.log(questionData);
+            console.log(questionData,"questionssssss");
             
             const response = await createQuestion(questionData);
             console.log("response in QuestionCreationPage" , response);
             
             if(response){
                 alert('Question Created Successfully 🟩 !');                
-
-
 
                 setShowModal(false);
                 setQuestionData({
@@ -84,34 +87,49 @@ const QuestionCreationPage = () => {
 
     return (
         <div style={styles.container}>
-            
-            
            
             <h2 style={styles.heading} >Created Questions</h2>
               
             {/* create question button  */}
             <button onClick={()=>setShowModal(true)} style={styles.createButton}>Create Question</button>
-   
-                
 
             {/* question list */}
             <div style={styles.questionList}>
                 {questions && Array.isArray(questions) ? (
-                    questions.map((q, index) => (
+                    questions.map((q, index) => 
+                    
+                         (
+                        
                         <div key={q._id || index} style={styles.questionItem}>
                             <h3>{q.question}</h3>
-                            <p><strong>Options:</strong>{q.options && Array.isArray(q.options) ? q.options.join(', ') :'No options available'}</p>
-                            <p><strong>Correct Option:</strong>{q.options && q.options[q.correctoptionIndex] ? q.options[q.correctoptionIndex]  : 'No correct option Added'}</p>
+                            {/* <p><strong>Options:</strong>{q.options && Array.isArray(q.options) ? q.options.join(', ') :'No options available'}</p>
+                            <p><strong>Correct Option:</strong>{q.options && q.options[q.correctoptionIndex] ? q.options[q.correctoptionIndex]  : 'No correct option Added'}</p> */}
+
+                            <p>
+                                <strong>Options:</strong>
+                                {q.options && q.options.length > 0
+                                    ? q.options.map(opt => opt.text).join(', ')
+                                    : 'No options available'}
+                            </p>
+
+                            <p>
+                                <strong>Correct Option:</strong>
+                                {q.options && q.options.length > 0 && typeof q.correctoptionIndex === 'number'
+                                    ? q.options[q.correctoptionIndex]?.text || 'No correct option added'
+                                    : 'No correct option Added'}
+
+                                    
+                            </p>
+
 
                         </div>
-                    ))
+                    
+                         ))
                     ) : (
                         <p>No questions created yet.</p>
                     )  
                 }
             </div>
-
-          
 
             {/* popup */}
 
@@ -167,7 +185,6 @@ const QuestionCreationPage = () => {
             
             )}
 
-            
         </div>
     );
 };

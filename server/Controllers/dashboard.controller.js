@@ -2,7 +2,7 @@
 import Assessment from "../models/assessment.model.js";
 import Result from "../models/result.model.js";
 
-export const getDashboardData = async (req, res) => {
+ const getDashboardData = async (req, res) => {
   try {
     const userId = req.user.id;
     const userRole = req.user.role;
@@ -23,3 +23,5 @@ export const getDashboardData = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch dashboard data" });
   }
 };
+
+export default getDashboardData;

@@ -31,7 +31,13 @@ export const register = async (req, res) =>{
             }
         );
 
-        res.status(201).json({message:"User created succssfully ", user : newUser});
+        const accessToken = generateAccessToken(newUser.get());
+        const refreshToken = generateRefreshToken(newUser.get());
+        
+        newUser.refreshToken = refreshToken;
+        await newUser.save();
+
+        res.status(201).json({message:"User created succssfully ", user : newUser, accessToken: accessToken, refreshToken: refreshToken});
  
     } catch (error) {
         res.status(500).json({message: "Server error", error: error.message});
@@ -64,7 +70,7 @@ export const login = async (req, res) =>{
         const accessToken = generateAccessToken(user.get());
         const refreshToken = generateRefreshToken(user.get());
 
-        //store the refresh token in the db 
+        //storing the refresh token in the db 
 
         user.refreshToken = refreshToken;
         await user.save();
