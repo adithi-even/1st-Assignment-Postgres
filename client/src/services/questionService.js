@@ -1,12 +1,13 @@
 import axios from "axios";
+import API from './api.js'
 
-const API_URL = "http://localhost:5000/api/questions"; // Update with correct backend port
+const API_URL = "/question"; // Update with correct backend port
 
 export const createQuestion = async(questionData) => {
     try {
         const token = localStorage.getItem('token');
 
-        const response = await axios.post(API_URL, questionData,{
+        const response = await API.post(API_URL, questionData,{
             headers:{Authorization: `Bearer ${token}`},
         });
 
@@ -21,15 +22,16 @@ export const createQuestion = async(questionData) => {
 export const getQuestions = async() => {
     try {
         const token = localStorage.getItem('token');
-
-        const response = await axios.get(API_URL,{
+        
+        const response = await API.get(API_URL,{
             headers:{Authorization: `Bearer ${token}`},
         });
-
+        
         return Array.isArray( response.data)? response.data : [ response.data];
-
+        
     } catch (error) {
         console.log('questionService => getQuestions', error);
+        throw error;
         
     }
 };

@@ -69,7 +69,18 @@ export const login = async (req, res) =>{
         user.refreshToken = refreshToken;
         await user.save();
 
-        res.status(200).json({message :"Successfully logged in ",accessToken, refreshToken, user: User});
+        res.status(200).json({
+            message :"Successfully logged in ",
+            accessToken, 
+            refreshToken,
+            account: {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                role: user.role
+            }
+            
+        });
 
     } catch (error) {
         res.status(400).json({message:"Error logging in "})
