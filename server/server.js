@@ -16,7 +16,11 @@ const app = express();
 
 //Middleware
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // your Vite frontend URL
+  credentials: true
+}));
+
 app.use(helmet());
 app.use(express.json());
 
@@ -29,6 +33,7 @@ app.use('/api/question', questionRoutes);
 // app.use('/api/option', optionRoutes);
 // app.use('/api/answer', answerRoutes);   
 app.use('/api/result', resultRoutes);
+app.use('/api/dashboard', dashboardRoutes); 
 
 //database
 
