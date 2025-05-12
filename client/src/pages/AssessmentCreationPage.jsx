@@ -73,7 +73,7 @@ const AssessmentCreationPage = () => {
 
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
-    const userId = user ? user._id : null  ;
+    const userId = user ? user.id : null  ;
 
     if(!userId){
       setMessage("user not found , login again !");
@@ -117,7 +117,7 @@ const AssessmentCreationPage = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {assessments.length > 0 ? (
           assessments.map((assessment, index) => (
-            <div key={assessment._id || index} style={styles.assessmentItem}>
+            <div key={assessment.id || index} style={styles.assessmentItem}>
               <h4>{index + 1}. {assessment.title}</h4>
               <p><strong>Questions:</strong> {assessment.questions.length}</p>
             </div>
@@ -143,12 +143,12 @@ const AssessmentCreationPage = () => {
         <div style={styles.questionList}>
           {questions && questions.length > 0 ? (
             questions.map((question, index) => (
-              <div key={question._id || index} style={styles.questionItem}>
+              <div key={question.id || index} style={styles.questionItem}>
                 <label  style={styles.label}>
                   <input
                     type="checkbox"
-                    checked={selectedQuestions.includes(question._id)}
-                    onChange={() => handleQuestionSelect(question._id)}
+                    checked={selectedQuestions.includes(question.id)}
+                    onChange={() => handleQuestionSelect(question.id)}
                     style={styles.checkbox}
                   />
                   {question.question}
