@@ -12,7 +12,7 @@ function ContentCreatorDashboard() {
 
   return (
     <div style={style.container}>
-        <h2>Content Creator Dashboard</h2>
+        <h2 style={style.subheading}>Content Creator Dashboard</h2>
         <div style={style.buttonContainer}>
             <button style={style.button} onClick={  ()=>{navigate('/questions' )}  }>Question Creation Page</button>
             <button style={style.button} onClick={  ()=>{navigate('/assessments')}  }>Assessment Creation Page</button>
@@ -22,6 +22,13 @@ function ContentCreatorDashboard() {
 };
 
 const style = {
+    subheading: {
+        marginTop: '20px',
+        marginBottom: '10px',
+        alignSelf: 'center',
+        color: '#000C',
+        fontSize:'30px'
+    },
     container: {
         display: 'flex',
         flexDirection: 'column',

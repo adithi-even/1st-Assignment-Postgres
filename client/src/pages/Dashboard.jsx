@@ -1,6 +1,6 @@
 //enduser page
 import React, { useState, useEffect } from "react";
-import  { getAssessments }  from '../services/assessmentService';
+import  { getAvailableAssessments }  from '../services/assessmentService';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -8,15 +8,15 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchAssessments = async () => {
+        const fetchAvailableAssessments  = async () => {
             try {
-                const data = await getAssessments();
+                const data = await getAvailableAssessments();
                 setAssessments(data);
             } catch (error) {
                 console.error('Error fetching assessments from Dashboard.jsx => fetchAssessments', error);
             }
         };
-        fetchAssessments();
+        fetchAvailableAssessments();
     }, []);
 
     const startTest = (assessmentId) => {

@@ -52,7 +52,7 @@ function LoginForm() {
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.heading}>Login</h2>
+        <h2 style={styles.subheading}>Login</h2>
         <input
           type="email"
           name="email"
@@ -75,6 +75,13 @@ function LoginForm() {
 }
 
 const styles = {
+  subheading: {
+        // marginTop: '20px',
+        marginBottom: '10px',
+        alignSelf: 'center',
+        color: '#000C',
+        fontSize:'30px'
+    },
   container: {
     display: 'flex',
     justifyContent: 'center',

@@ -23,16 +23,16 @@ export const createQuestion = async (req, res) => {
           await Option.bulkCreate(optionData);
         }
 
-        
-
         const createdQuestion = await Question.findByPk(newQuestion.id, {
-            include: [Option]
+            include: [{
+                model: Option,
+                as:'options',
+            }]
         });
 
         console.log("createdQuestion....", createQuestion);
         
         res.status(201).json({ message: "Question created successfully", createdQuestion });
-
         
     } catch (error) {
         res.status(500).json({ message: error.message });   
@@ -42,7 +42,13 @@ export const createQuestion = async (req, res) => {
 export const getQuestionById = async (req, res) => {
     try {
         const question = await Question.findByPk(req.params.id, {
-            include: [Option]
+            include: [
+                {
+                    model: Option,
+                    as : 'options',
+                    attributes: ['text', 'isCorrect', 'id'],
+                },
+            ]
         });
 
         if(!question){
@@ -102,7 +108,6 @@ export const deleteQuestion = async (req, res ) => {
         console.error("Delete question error:", error); 
         return res.status(500).json({ message: "Couldn't delete the question", error: error.message });
     }
-        
     
 };
 

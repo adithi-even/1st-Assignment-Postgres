@@ -36,7 +36,7 @@ const QuestionCreationPage = () => {
                 }
             } catch (error) {
                 console.error("error fetchisng questions", error);
-                
+ 
             }
         };
 
@@ -60,6 +60,8 @@ const QuestionCreationPage = () => {
 
         try {
             console.log(questionData,"questionssssss");
+                  await new Promise((resolve) => setTimeout(resolve, 2000));  //delay
+
             
             const response = await createQuestion(questionData);
             console.log("response in QuestionCreationPage" , response);
@@ -81,14 +83,12 @@ const QuestionCreationPage = () => {
                 alert('Failed to create question ❌');
                 console.error('Error creating question:', error.response ? error.response.data : error.message);
             }
-            
         }
-    
 
     return (
         <div style={styles.container}>
            
-            <h2 style={styles.heading} >Created Questions</h2>
+            <h2 style={styles.subheading} >Created Questions</h2>
               
             {/* create question button  */}
             <button onClick={()=>setShowModal(true)} style={styles.createButton}>Create Question</button>
@@ -117,8 +117,6 @@ const QuestionCreationPage = () => {
                                 {q.options && q.options.length > 0 && typeof q.correctoptionIndex === 'number'
                                     ? q.options[q.correctoptionIndex]?.text || 'No correct option added'
                                     : 'No correct option Added'}
-
-                                    
                             </p>
 
 
@@ -191,6 +189,13 @@ const QuestionCreationPage = () => {
 
 // ✅ Same CSS Styling as RegisterForm.jsx
 const styles = {
+    subheading: {
+        marginTop: '20px',
+        marginBottom: '10px',
+        alignSelf: 'center',
+        color: '#000C',
+        fontSize:'30px'
+    },
     container: {
         padding:"20px",
         display: "flex",
@@ -206,13 +211,14 @@ const styles = {
         color: "#333",
     },
     questionList: {
-        width: "400px",
-        backgroundColor: "#fff",
-        padding: "20px",
-        borderRadius: "8px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        marginBottom: "20px",
-        
+        flex:1,
+        maxHeight: 'auto',
+        overflowY: 'auto',
+        padding: '10px',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        marginBottom: '20px',
+        backgroundColor: '#fafafa',
     },
     questionItem: {
         borderBottom: "1px solid #ddd",
@@ -225,7 +231,8 @@ const styles = {
         border: "none",
         borderRadius: "4px",
         cursor: "pointer",
-        fontSize: "16px",
+        fontSize: "18px",
+        marginBottom: "10px"
     },
     modalOverlay: {
         position: "fixed",

@@ -4,33 +4,34 @@ import AssessmentQuestion from "../models/assessmentQuestions.model.js";
 
 export const createAssessment = async (req, res) => {
     try{
-        const {title, createdBy, questionIds} = req.body;
-        console.log("req.body.questionIds:", req.body.questionIds);
+        const {title, createdBy, questions: questionIds} = req.body;
+        console.log("req.body.questionIds:", req.body.questions);
 
         const existing = await Assessment.findOne({ where: { title, createdBy } });
         if (existing) {
             return res.status(400).json({ message: "Assessment already exists. Try with the different title or different creator " });
         }
 
-
         const newAssessment = await Assessment.create({
             title,
             createdBy
         });
         console.log("newAssessment.id:", newAssessment.id);        
-        console.log("newAssessmenttttttttt", newAssessment);        
-        console.log(questionIds.length,"length");
         
 
-        
-        if (questionIds && questionIds.length > 0) {
-              console.log("Inside the if block - questionIds:", questionIds);
-            const questionMappings = questionIds.map(questionId => ({
+            if (questionIds && questionIds.length > 0) {
+                console.log("Inside the if block - questionIds:", questionIds);
+                const questionMappings = questionIds.map(questionId => ({
                 assessmentId: newAssessment.id,
                 questionId,
             }));
-             console.log("Attempting to create AssessmentQuestion mappings:", questionMappings);
-            await AssessmentQuestion.bulkCreate(questionMappings);
+
+             console.log("question Mapping", questionMappings);
+
+             console.log("Attempting to create AssessmentQuestion before:");
+             await AssessmentQuestion.bulkCreate(questionMappings);
+             console.log("Attempting to create AssessmentQuestion after:");
+             
         }else {
             console.log("questionIds is either null/undefined or empty:", questionIds); // Log if the if condition fails
         }
@@ -128,4 +129,27 @@ export const deleteAssessment = async (req, res) => {
         res.status(500).json({message: "Couldn't delete assessment", error: error.message});
     }
 
+}
+
+
+//END USER CONTROLLER 
+
+export const getAssessmentsForEndUser = async(req, res) => {
+    try {
+
+        const asessmentsForEndUser = await Assessment.findAll({
+            include:[
+                {
+                    model: Question,
+                    as: 'Questions'
+                }
+            ],
+
+        });
+        
+        res.json(asessmentsForEndUser)
+
+    } catch (error) {
+        res.status(500).json({message:"Error loading the Assessments for end-user ", error: error.message})   
+    }
 }

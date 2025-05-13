@@ -1,7 +1,7 @@
 //cc page
 import React, { useState, useEffect } from 'react';
 import { getQuestions }  from '../services/questionService.js';
-import { getAssessments } from '../services/assessmentService.js'
+import { getAssessments, createAssessment } from '../services/assessmentService.js'
 import axios from 'axios';
 import API from '../services/api';
 
@@ -22,7 +22,7 @@ const AssessmentCreationPage = () => {
           console.log(data[0].questions,"data.questions");
           
       } else {
-          console.error("Unexpected data format:", data);
+          console.error("Unexpected data format fetchQuestions:", data);
           setQuestions([]); 
       }
             
@@ -35,14 +35,25 @@ const AssessmentCreationPage = () => {
   const fetchAssessments = async () => {
     try {
       const response = await getAssessments();
-      console.log("Fetched assessments:", response);
+      console.log("Fetched assessments", response);
 
-      if(response?.data && Array.isArray(response.data)){
-        setAssesments(response.data);
+      if(Array.isArray(response)){
+        const sortedAssessments = [...response].sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+        setAssesments(sortedAssessments);
+        console.log("Assessments state updated:", response); // Add this line
+
       }else{
-        console.error("Unexpected data format",response.data);
+        console.error("Unexpected data format fetch Assessments",response);
         setAssesments([]);
       }        
+      // if(response?.data && Array.isArray(response.data)){
+      //   setAssesments(response.data);
+      // }else{
+      //   console.error("Unexpected data format fetch Assessments",response);
+      //   setAssesments([]);
+      // }        
     } catch (error) {
       console.error("Error fetching Assessments", error);
       setMessage(`Failed to fetch Assessments: ${error.message}`); 
@@ -64,6 +75,8 @@ const AssessmentCreationPage = () => {
     });
   };
 
+
+  //handleSubmit
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title || selectedQuestions.length === 0) {
@@ -80,6 +93,8 @@ const AssessmentCreationPage = () => {
       return;
     }
 
+    console.log(userId, "useriD");
+
     const requestBody = {
       title,
       questions: selectedQuestions,
@@ -89,22 +104,20 @@ const AssessmentCreationPage = () => {
     console.log("assessment created requestBody:", requestBody);
 
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('/api/assessments',requestBody ,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      console.log("assessment created res.data:", response.data);
+      const response = await createAssessment(requestBody);
+
+      console.log("assessment created res", response);
       
       setMessage('Assessment created successfully!');
+      alert("Assessment creted successfully ✔")
       setTitle('');
       setSelectedQuestions([]);
-
+      
       fetchAssessments();
     } catch (error) {
       console.error('Error creating assessment:', error);
       setMessage('Error creating assessment.');
+      throw error;
     }
   };
 
@@ -112,58 +125,63 @@ const AssessmentCreationPage = () => {
     <div style={styles.container}>
       {/* Display Created Assessments */}
       <h3 style={styles.subheading}>Created Assessments:</h3>
-    <div style={styles.container2}>
+      <div style={styles.container2}>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        {assessments.length > 0 ? (
-          assessments.map((assessment, index) => (
-            <div key={assessment.id || index} style={styles.assessmentItem}>
-              <h4>{index + 1}. {assessment.title}</h4>
-              <p><strong>Questions:</strong> {assessment.questions.length}</p>
-            </div>
-          ))
-        ) : (
-          <p style={styles.noAssessments}>No assessments created yet.</p>
-        )}
-      </div>
+        <div style={styles.assessmentListContainer}>
+          {assessments.length > 0 ? (
+            assessments.map((assessment, index) => {
+            
 
+            return(
 
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.heading}>Create Assessment</h2>
-        
-        <input
-          type="text"
-          placeholder="Assessment Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          style={styles.input}
-        />
-
-        <h3 style={styles.subheading}>Select Questions:</h3>
-        <div style={styles.questionList}>
-          {questions && questions.length > 0 ? (
-            questions.map((question, index) => (
-              <div key={question.id || index} style={styles.questionItem}>
-                <label  style={styles.label}>
-                  <input
-                    type="checkbox"
-                    checked={selectedQuestions.includes(question.id)}
-                    onChange={() => handleQuestionSelect(question.id)}
-                    style={styles.checkbox}
-                  />
-                  {question.question}
-                </label>
+              <div key={assessment?.id || index} style={styles.assessmentItem}>
+                <h4>{index + 1}. {assessment.title || 'Untitled Assessment'}</h4>
+                <p><strong>Questions:</strong> {assessment?.Questions?.length || 0}</p>
               </div>
-            ))
+            )
+
+          })
           ) : (
-            <p style={styles.noQuestions}>No questions available. Please add some questions first.</p>
+            <p style={styles.noAssessments}>No assessments created yet.</p>
           )}
         </div>
 
-        <button type="submit" style={styles.button}>Create Assessment</button>
-      </form>
+        <form onSubmit={handleSubmit} style={styles.form}>
+          <h2 style={styles.heading}>Create Assessment</h2>
+          
+          <input
+            type="text"
+            placeholder="Assessment Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={styles.input}
+          />
 
-    </div>
+          <h3 style={styles.subheading}>Select Questions:</h3>
+          <div style={styles.questionList}>
+            {questions && questions.length > 0 ? (
+              questions.map((question, index) => (
+                <div key={question?.id || index} style={styles.questionItem}>
+                  <label  style={styles.label}>
+                    <input
+                      type="checkbox"
+                      checked={selectedQuestions.includes(question.id)}
+                      onChange={() => handleQuestionSelect(question.id)}
+                      style={styles.checkbox}
+                    />
+                    {question.question}
+                  </label>
+                </div>
+              ))
+            ) : (
+              <p style={styles.noQuestions}>No questions available. Please add some questions first.</p>
+            )}
+          </div>
+
+          <button type="submit" style={styles.button}>Create Assessment</button>
+        </form>
+
+      </div>
 
       {message && <p style={styles.message}>{message}</p>}
       
@@ -175,30 +193,46 @@ const styles = {
   container: {
     display: 'flex',
     flexDirection:'column',
-    justifyContent: 'center',
     alignItems: 'center',
+    minHeight: '100vh',
     height: '100vh',
     backgroundColor: '#f4f4f9',
     padding: '20px',
   },
   container2: {
+    position:'relative',
     display: 'flex',
     flexDirection:'row',
-    gap:'10px',
+    flexWrap:'wrap',
+    gap:'20px',
     justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
+    alignItems: 'flex-start',
+    width:'70%',
+    maxWidth:'1200px',
+    margin: '20px auto',
+    height: '100%',
     backgroundColor: '#f4f4f9',
     padding: '20px',
   },
+   assessmentListContainer: { // New style for the list
+    flex: '1 1 300px', // Allow it to take available space
+    maxHeight: '70%', // Set a maximum height
+    overflowY: 'auto', // Enable vertical scrolling
+    padding: '15px',
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
+  },
   form: {
+    // flex: '1 1 300px',
+    position:'sticky',
     display: 'flex',
     flexDirection: 'column',
+    height: '70%',
     padding: '30px',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     backgroundColor: '#fff',
-    width: '400px',
   },
   heading: {
     textAlign: 'center',
@@ -208,7 +242,9 @@ const styles = {
   subheading: {
     marginTop: '20px',
     marginBottom: '10px',
-    color: '#555',
+    alignSelf: 'center',
+    color: '#000C',
+    fontSize:'30px'
   },
   input: {
     marginBottom: '20px',
@@ -218,7 +254,8 @@ const styles = {
     fontSize: '16px',
   },
   questionList: {
-    maxHeight: '200px',
+    flex:1,
+    maxHeight: 'auto',
     overflowY: 'auto',
     padding: '10px',
     border: '1px solid #ddd',
@@ -255,7 +292,13 @@ const styles = {
     fontStyle: 'italic',
   },
   assessmentItem:{
+    marginBottom:'10px',
+    padding:'20px',
     flexDirection:'column',
+    backgroundColor:'#fafafa',
+    borderRadius: '20px',
+    boxShadow: 'border-box',
+    fontSize:'16px'
   }
 };
 
