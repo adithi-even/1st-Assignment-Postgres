@@ -7,8 +7,7 @@ const TestPage=() => {
     const {assessmentId} = useParams(); //since we are using the react router dom we are using the url for fetching assessment id
     const [assessment, setAssessment] = useState(null);
     const [answers, setAnswers] = useState({});
-    // const [EditingQuestionId, setEditingQuestionId] = useState(null);
-    // const [editedQuestion,setEditedQuestion] = useState({})
+ 
     const Navigate = useNavigate();
 
     const fetchAssessment = async () => {
@@ -16,7 +15,14 @@ const TestPage=() => {
         try {
             console.log("Fetching assessmentId...",assessmentId);
             
-            const response = await axios.post(`/api/assessments/${assessmentId}/start`);
+            const response = await axios.post(`/api/assessments/${assessmentId}/start`, {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+
+            );
             setAssessment(response.data.assessment);
         } catch (error) {
             console.error('Error fetching the answers', Error);
@@ -33,43 +39,25 @@ const TestPage=() => {
         setAnswers({...answers, [questionId] : optionIndex });
     };
 
-    // const handleEditClick = (question) => {
-    //     setEditingQuestionId(question._id);
-    //     setEditedQuestion({...question})
-    // } 
-    
-    // const handleQuestionChange = (question) => {
-        
-    // } 
-
-    // const handleOptionChange = (question) => {
-        
-    // } 
-    
-    // const saveEditedQuestion = (question) => {
-        
-    // } 
-    
-    // const deleteQuestion = (question) => {
-        
-    // } 
     
     const handleSubmit = async () => {
 
-        const unansweredQuestions = assessment.questions.filter(
-            (question) => !(question._id in answers)
-        );
-
-        if(unansweredQuestions.length > 0){
+         if (!assessment?.questions || Object.keys(answers).length < assessment.questions.length) {
             alert(`Please answer all questions before submitting!`);
             return;
         }
 
-
         try {
-            const response = await axios.post(`/api/results/${assessmentId}/submit`, {
-                userAnswers: answers
-            });
+            const token = localStorage.getItem('token');
+            const response = await axios.post(
+                `/api/results/${assessmentId}/submit`,
+                { userAnswers: answers },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
     
             if (response.status === 200) {
                 console.log("Test Submitted Successfully:", response.data);
@@ -91,7 +79,8 @@ const TestPage=() => {
     <div>
         <h1 className="text-2xl font-bold mb-4">{assessment.title}</h1>
 
-        {assessment.questions.map((question, index) => (
+     {assessment?.questions && assessment.questions.length > 0 ? (
+        assessment.questions.map((question, index) => (
             <div key={question._id} className='mb-6'>
                 <p>{index + 1}. { assessment.questions[index].question}</p>
 
@@ -109,7 +98,10 @@ const TestPage=() => {
                     </div>
                 ))}
             </div>
-        ))}
+        ))
+    ) : (
+        <div>No questions available for thi assessment</div>
+    )}
         <button type='submit' className="bg-blue-500 text-white px-4 py-2 rounded"  onClick={handleSubmit}>Submit</button>
     </div>
   );

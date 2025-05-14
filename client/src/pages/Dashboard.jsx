@@ -1,6 +1,6 @@
 //enduser page
 import React, { useState, useEffect } from "react";
-import  { getAvailableAssessments }  from '../services/assessmentService';
+import  { getAvailableAssessments }  from '../services/assessmentService.js';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
@@ -8,9 +8,9 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchAvailableAssessments  = async () => {
+        const fetchAvailableAssessments = async () => {
             try {
-                const data = await getAvailableAssessments();
+                const data = await getAvailableAssessments(); 
                 setAssessments(data);
             } catch (error) {
                 console.error('Error fetching assessments from Dashboard.jsx => fetchAssessments', error);
@@ -26,13 +26,13 @@ const Dashboard = () => {
     return (
         <div style={styles.container}>
             <h2 style={styles.heading}>Available Assessments</h2>
-            <div style={styles.assessmentList}>
+            <div  style={styles.assessmentList}>
                 {assessments && Array.isArray(assessments) ? (
-                    assessments.map((assessment) => (
-                        <div key={assessment._id} style={styles.assessmentCard}>
+                    assessments.map((assessment, index) => (
+                        <div key={assessment.id || index} style={styles.assessmentCard}>
                             <h3 style={styles.assessmentTitle}>{assessment.title}</h3>
                             <button 
-                                onClick={() => startTest(assessment._id)}
+                                onClick={() => startTest(assessment.id)}
                                 style={styles.button}
                             >
                                 Start Test

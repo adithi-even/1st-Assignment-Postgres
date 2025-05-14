@@ -34,22 +34,20 @@ export const getAssessments = async () => {
         console.log("assessmentService => getAssessments Error:" , error);
         return { data: [] };   
     }
+    
 };
 
 
 export const getAvailableAssessments = async () => {
     try {
         const token = localStorage.getItem('token');
-        
-        const response = await API.get(API_URL, {
-            headers:{Authorization: `Bearer ${token}`},
+        const response = await API.get(`${API_URL}/available`, {
+            headers: { Authorization: `Bearer ${token}` },
         });
-        
         return response.data;
-
     } catch (error) {
-        console.log("assessmentService => getAvailableAssessments Error:" , error);
-        return { data: [] };   
+          console.log("assessmentService => getAvailableAssessments Error:" , error);
+        return { data: [] };  
     }
-}
+};
 

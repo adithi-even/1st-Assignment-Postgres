@@ -46,8 +46,14 @@ export const createAssessment = async (req, res) => {
 
 export const getAssessmentById = async (req, res) => {
     try {
+        console.log('getAssessmentById called with ID:', req.params.id);
         const assessment = await Assessment.findByPk(req.params.id, {
-            include:[Question],
+            include:[
+                {
+                    model: Question,
+                    as: 'Questions'
+                }
+            ],
         });
 
         if(!assessment) {
@@ -135,6 +141,8 @@ export const deleteAssessment = async (req, res) => {
 //END USER CONTROLLER 
 
 export const getAssessmentsForEndUser = async(req, res) => {
+        console.log("getAvailableAssessmentsForEndUser called!");
+
     try {
 
         const asessmentsForEndUser = await Assessment.findAll({
@@ -146,10 +154,36 @@ export const getAssessmentsForEndUser = async(req, res) => {
             ],
 
         });
-        
+        console.log("Assessments fetched:", asessmentsForEndUser);
+
         res.json(asessmentsForEndUser)
 
     } catch (error) {
         res.status(500).json({message:"Error loading the Assessments for end-user ", error: error.message})   
     }
 }
+
+export const startAssessment = async (req, res) => {
+    try {
+        const { assessmentId } = req.params;
+
+        const assessment = await Assessment.findByPk(assessmentId, {
+            include: [
+                {
+                    model: Question,
+                    as: 'Questions', 
+                }
+            ]
+        });
+
+        if (!assessment) {
+            return res.status(404).json({ message: "Assessment not found." });
+        }
+
+        res.status(200).json({ assessment });
+
+    } catch (error) {
+        console.error("Error starting assessment:", error);
+        res.status(500).json({ message: "Failed to start assessment." });
+    }
+};
