@@ -60,7 +60,6 @@ const QuestionCreationPage = () => {
 
         try {
             console.log(questionData,"questionssssss");
-                  await new Promise((resolve) => setTimeout(resolve, 2000));  //delay
 
             
             const response = await createQuestion(questionData);

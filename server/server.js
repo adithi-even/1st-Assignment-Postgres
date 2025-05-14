@@ -11,7 +11,6 @@ import resultRoutes from "./Routes/results.routes.js";
 import dashboardRoutes from "./Routes/dashboard.routes.js";
 import './models/index.model.js';
 
-
 //initializes express app 
 
 const app = express();
@@ -32,8 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/assessment', assessmentRoutes);
 app.use('/api/question', questionRoutes);
-// app.use('/api/option', optionRoutes);
-// app.use('/api/answer', answerRoutes);   
+ 
 app.use('/api/result', resultRoutes);
 app.use('/api/dashboard', dashboardRoutes); 
 

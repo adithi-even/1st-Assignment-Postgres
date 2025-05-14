@@ -8,6 +8,16 @@ import Option from '../models/option.model.js';
 export const submitResult = async (req, res) => {
     try {
        const {assessmentId, userId, answers, score} = req.body;
+       console.log(
+        "Received Submission",{
+                assessmentId,
+                userId,
+                answersLength: answers?.length,
+                score
+            }
+
+       );
+       
 
        //validate assessment & user existance
         const assessment = await Assessment.findByPk(assessmentId);
@@ -22,7 +32,13 @@ export const submitResult = async (req, res) => {
 
         //create result
 
-        const result = await Result.create({assessmentId, userId, score});
+        const result = await Result.create(
+            {
+                assessmentId,
+                userId, 
+                score: score || 0
+            }
+        );
 
         //create result asnwers
 
@@ -50,7 +66,7 @@ export const getResultById = async (req, res) => {
     try {
         const { resultId } = req.params;
 
-        console.log("Params received:", req.params);
+        console.log("Params received:", resultId);
 
 
         const result = await Result.findByPk(resultId, {
@@ -68,10 +84,11 @@ export const getResultById = async (req, res) => {
                     include:[
                         {
                             model:Question,
-                            attributes:['question','correctoptionIndex'],
+                            attributes:['id', 'question','correctoptionIndex'],
                             include:[
                                 {
                                     model: Option,
+                                    as: 'options',
                                     attributes:['id', 'text', 'isCorrect']
                                 }
                             ]
