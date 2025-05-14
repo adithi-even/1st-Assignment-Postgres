@@ -2,6 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import { useNavigate, useParams} from 'react-router-dom';
 import axios from 'axios';
+import { getAssessmentById } from '../services/assessmentService';
 
 const TestPage=() => {
     const {assessmentId} = useParams(); //since we are using the react router dom we are using the url for fetching assessment id
@@ -10,28 +11,27 @@ const TestPage=() => {
  
     const Navigate = useNavigate();
 
-    const fetchAssessment = async () => {
+    const startSession = async () => {
 
         try {
             console.log("Fetching assessmentId...",assessmentId);
             
-            const response = await axios.post(`/api/assessments/${assessmentId}/start`, {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-
-            );
-            setAssessment(response.data.assessment);
+            const data = await getAssessmentById(assessmentId);
+        
+            console.log("response of setAssessment", data.assessment);
+            
+            setAssessment(data);
+            console.log('data.Questions', data.Questions[0]);
+            console.log('data', data);
+            
         } catch (error) {
-            console.error('Error fetching the answers', Error);
+            console.error('Error fetching the answers', error.response);
             
         }
     };
 
     useEffect(()=>{
-        fetchAssessment();
+        startSession();
     },[assessmentId]);
 
 
@@ -42,7 +42,7 @@ const TestPage=() => {
     
     const handleSubmit = async () => {
 
-         if (!assessment?.questions || Object.keys(answers).length < assessment.questions.length) {
+         if (!assessment?.Questions || Object.keys(answers).length < assessment.Questions.length) {
             alert(`Please answer all questions before submitting!`);
             return;
         }
@@ -73,34 +73,34 @@ const TestPage=() => {
     };
     if(!assessment) return <div>Loading assessment...</div>;
 
-
-
   return (
     <div>
         <h1 className="text-2xl font-bold mb-4">{assessment.title}</h1>
 
-     {assessment?.questions && assessment.questions.length > 0 ? (
-        assessment.questions.map((question, index) => (
-            <div key={question._id} className='mb-6'>
-                <p>{index + 1}. { assessment.questions[index].question}</p>
+     {assessment?.Questions && assessment.Questions.length > 0 ? (
+        assessment.Questions.map((question, index) => (
+            <div key={question.id} className='mb-6'>
+                <p>{index + 1}. {question.question}</p>
 
-                {question.options.map((option, idx) => (
-                    <div key={idx} className='flex items-center'>
+                {question.options?.map((option, idx) => (
+                    <div key={option.id} className='flex items-center'>
                         <input
                          type="radio"
-                         name={question._id}
+                         name={question.id}
                          value={idx}
-                         onChange={() => handleAnswerChange(question._id, idx)}
-                         checked={answers[question._id] === idx}
+                         onChange={() => handleAnswerChange(question.id, idx)}
+                         checked={answers[question.id] === idx}
                          className='mr-2'
                          />
-                        <label >{option}</label>
+                        <label >{option.text}</label>
                     </div>
                 ))}
             </div>
         ))
+      
+
     ) : (
-        <div>No questions available for thi assessment</div>
+        <div>No questions available for this assessment</div>
     )}
         <button type='submit' className="bg-blue-500 text-white px-4 py-2 rounded"  onClick={handleSubmit}>Submit</button>
     </div>

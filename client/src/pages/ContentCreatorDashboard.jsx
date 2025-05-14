@@ -15,7 +15,7 @@ function ContentCreatorDashboard() {
         <h2 style={style.subheading}>Content Creator Dashboard</h2>
         <div style={style.buttonContainer}>
             <button style={style.button} onClick={  ()=>{navigate('/questions' )}  }>Question Creation Page</button>
-            <button style={style.button} onClick={  ()=>{navigate('/assessments')}  }>Assessment Creation Page</button>
+            <button style={style.button} onClick={  ()=>{navigate('/assessment')}  }>Assessment Creation Page</button>
         </div>
     </div>
   );

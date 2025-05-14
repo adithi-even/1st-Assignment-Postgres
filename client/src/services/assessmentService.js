@@ -51,3 +51,20 @@ export const getAvailableAssessments = async () => {
     }
 };
 
+
+export const getAssessmentById = async (assessmentId) => {
+  try {
+    const token = localStorage.getItem('token');
+  
+    const response = await API.get(`/assessment/${assessmentId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  
+  } catch (error) {
+     console.log("assessmentService => getAssessmentById Error:" , error);
+    
+  }
+};

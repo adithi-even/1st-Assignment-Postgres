@@ -10,7 +10,9 @@ const router = express.Router();
 
 router.post('/', authenticate, authorize("content_creator"), createAssessment); //
 router.get('/', authenticate, authorize("content_creator"), getAssessments); //
+
 router.get('/available', authenticate, authorize("end_user"), getAssessmentsForEndUser);
+
 router.get('/:id', authenticate, getAssessmentById); //
 router.put('/:id', authenticate, authorize("content_creator"), updateAssessment); //
 router.delete('/:id', authenticate, authorize("content_creator"), deleteAssessment); //

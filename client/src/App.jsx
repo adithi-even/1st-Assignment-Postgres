@@ -34,7 +34,7 @@ function App() {
         {/* Protected Routes for Content Creators */}
         <Route element={<ProtectedRoute allowedRoles={['content_creator']} />}>
           <Route path="/cc-dashboard" element={<ContentCreatorDashboard />} />
-          <Route path="/assessments" element={<AssessmentCreationPage />} />
+          <Route path="/assessment" element={<AssessmentCreationPage />} />
           <Route path="/questions" element={<QuestionCreationPage />} />
         </Route>
 

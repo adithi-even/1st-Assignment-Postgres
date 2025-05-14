@@ -16,7 +16,7 @@ const Question = sequelize.define(
         correctoptionIndex:{
             type: DataTypes.INTEGER,
             allowNull: false,
-        },
+        }
     },
     {
         timestamps:true,

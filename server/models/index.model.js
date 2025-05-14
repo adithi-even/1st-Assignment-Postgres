@@ -24,7 +24,6 @@ Question.belongsToMany(Assessment, {
     through: AssessmentQuestion,
     foreignKey: 'questionId',
     as: "Assessments"
-
 });
  
 Question.hasMany(Option, {
@@ -33,7 +32,8 @@ Question.hasMany(Option, {
     onDelete: 'CASCADE'
 });
 Option.belongsTo(Question, {
-    foreignKey: 'questionId'
+    foreignKey: 'questionId',
+    as:'question'
 });
  
 User.hasMany(Result, {
@@ -43,8 +43,6 @@ User.hasMany(Result, {
 Result.belongsTo(User, {
     foreignKey: 'userId'
 });
-
-
 
 Result.belongsTo(Assessment, {
     foreignKey: 'assessmentId'
@@ -59,7 +57,6 @@ Result.hasMany(ResultAnswer, {
    onDelete: 'CASCADE'
 });
 
-
 ResultAnswer.belongsTo(Result, {
     foreignKey: 'resultId'
 });
@@ -68,5 +65,4 @@ ResultAnswer.belongsTo(Question, {
     foreignKey: 'questionId'
 });
 
- 
 export { sequelize, User, Assessment, Question, Option, Result, ResultAnswer, AssessmentQuestion };

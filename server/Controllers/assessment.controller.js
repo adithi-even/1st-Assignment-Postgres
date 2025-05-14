@@ -1,6 +1,7 @@
 import Assessment from "../models/assessment.model.js";
 import Question from "../models/question.model.js";
 import AssessmentQuestion from "../models/assessmentQuestions.model.js";
+import Option from "../models/option.model.js";
 
 export const createAssessment = async (req, res) => {
     try{
@@ -51,7 +52,14 @@ export const getAssessmentById = async (req, res) => {
             include:[
                 {
                     model: Question,
-                    as: 'Questions'
+                    as: 'Questions',
+                    include: [
+                        {
+                            model: Option,
+                            as: "options"
+                        }
+                    ]
+                   
                 }
             ],
         });
@@ -122,11 +130,9 @@ export const deleteAssessment = async (req, res) => {
         const assessmentId = req.params.id;
         console.log(assessmentId,"delete assessment id");
         
-
         const assessment = await Assessment.findByPk(assessmentId);
         console.log(assessment,"delete assessment ");
         
-
         if(!assessment)return res.status(404).json({error: "Assessment not found"});
         await assessment.destroy();
         res.status(200).json({message:"Successfully deleted Assessment "});
@@ -165,13 +171,18 @@ export const getAssessmentsForEndUser = async(req, res) => {
 
 export const startAssessment = async (req, res) => {
     try {
-        const { assessmentId } = req.params;
+        const assessmentId = req.params.id ;
 
         const assessment = await Assessment.findByPk(assessmentId, {
             include: [
                 {
                     model: Question,
-                    as: 'Questions', 
+                    as: 'Questions',
+                    include: [
+                        { 
+                            model: Option, as: 'options' 
+                        }
+                    ]
                 }
             ]
         });
@@ -187,3 +198,11 @@ export const startAssessment = async (req, res) => {
         res.status(500).json({ message: "Failed to start assessment." });
     }
 };
+
+
+// testing
+// const allQuestions = await Question.findAll({
+//   include: [{ model: Option, as: "options" }]
+// });
+
+// console.log(JSON.stringify(allQuestions, null, 2));

@@ -6,6 +6,7 @@ const API = axios.create({
         'Content-Type': 'application/json',
     },  
     withCredentials: true
-});
+});             //parameters of POST (URL , data , and config)
+
 
 export default API ;
