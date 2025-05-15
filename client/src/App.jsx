@@ -9,7 +9,8 @@ import {ResultsPage} from '../src/pages/ResultsPage';
 import TestPage from '../src/pages/TestPage';
 import Home from './pages/Home';
 import ContentCreatorDashboard from './pages/ContentCreatorDashboard';
-import ProtectedRoute from "./components/Auth/ProtectedRoute"; // Import protected route
+import ProtectedRoute from "./components/Auth/ProtectedRoute"; 
+import Navbar from './components/Navigation/navBar';
 
 
 
@@ -18,6 +19,7 @@ function App() {
 
   return (
     <BrowserRouter>
+    <Navbar/>
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
