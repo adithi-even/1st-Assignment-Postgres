@@ -103,8 +103,6 @@ export const logout = async (req, res) =>{
            return res.status(400).json({message: "User not found"});
         }
 
-        
-
         //remove the refresh token from the db because we are logging out
         user.refreshToken = null;
         await user.save();

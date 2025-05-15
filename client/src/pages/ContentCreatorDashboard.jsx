@@ -1,18 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function ContentCreatorDashboard() {
 
     const navigate = useNavigate();
-    
-    useEffect(()=>{
+    const [username, setUsername] = useState('');
 
-    },[])
+    
+    useEffect(() => {
+        const user = localStorage.getItem('user');
+        if (user) {
+            try {
+                const parsedUser = JSON.parse(user);
+                setUsername(parsedUser.username);
+            } catch (error) {
+                console.error("Error parsing user from localStorage:", error);
+                setUsername('User');
+            }
+        } else {
+            navigate('/login');
+        }
+    }, [navigate]);
 
 
   return (
     <div style={style.container}>
-        <h2 style={style.subheading}>Content Creator Dashboard</h2>
+        {/* <h2 style={style.subheading}>Content Creator Dashboard</h2> */}
+        <div>
+        <h2 style={style.subheading}>Welcome ! to your dashboard {username} </h2>
+        {/* <h2 style={style.heading}>Content Creator dashboard</h2> */}
+
+        </div>
         <div style={style.buttonContainer}>
             <button style={style.button} onClick={  ()=>{navigate('/questions' )}  }>Question Creation Page</button>
             <button style={style.button} onClick={  ()=>{navigate('/assessment')}  }>Assessment Creation Page</button>
@@ -33,8 +51,9 @@ const style = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'top',
         height: '100vh',
+        gap:'30px',
         backgroundColor: '#f4f4f9',
     },
     heading: {

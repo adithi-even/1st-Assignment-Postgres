@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
     const [assessments, setAssessments] = useState([]);
+        const [username, setUsername] = useState('');
+    
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,8 +18,23 @@ const Dashboard = () => {
                 console.error('Error fetching assessments from Dashboard.jsx => fetchAssessments', error);
             }
         };
+
+         const user = localStorage.getItem('user');
+        if (user) {
+            try {
+                const parsedUser = JSON.parse(user);
+                setUsername(parsedUser.username);
+            } catch (error) {
+                console.error("Error parsing user from localStorage:", error);
+                setUsername('User');
+            }
+        } else {
+            navigate('/login');
+        }
+
+
         fetchAvailableAssessments();
-    }, []);
+    }, [navigate]);
 
     const startTest = (assessmentId) => {
         navigate(`/test/${assessmentId}`);
@@ -25,6 +42,7 @@ const Dashboard = () => {
 
     return (
         <div style={styles.container}>
+            <h2 style={styles.subheading}>Welcome ! to your dashboard {username} </h2>
             <h2 style={styles.heading}>Available Assessments</h2>
             <div  style={styles.assessmentList}>
                 {assessments && Array.isArray(assessments) ? (
@@ -56,27 +74,38 @@ const styles = {
         backgroundColor: '#f4f4f9',
         minHeight: '100vh',
     },
+    subheading: {
+        marginTop: '20px',
+        marginBottom: '10px',
+        alignSelf: 'center',
+        color: '#000C',
+        fontSize:'20px'
+    },
     heading: {
         fontSize: '28px',
         color: '#333',
         marginBottom: '30px',
     },
     assessmentList: {
+        width:'100%',
         display: 'flex',
+        flexDirection:'column',
         flexWrap: 'wrap',
         justifyContent: 'center',
+        alignItems: 'center',
         gap: '20px',
     },
     assessmentCard: {
+        width: '70%',
         backgroundColor: '#fff',
         border: '1px solid #ddd',
         borderRadius: '8px',
         padding: '20px',
-        width: '250px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent:'space-between',
     },
     assessmentTitle: {
         fontSize: '20px',

@@ -24,18 +24,21 @@ const RegisterForm = () => {
     try {
       const data = await registerUser(formData);
 
-      console.log("Registration Success:", data); // ✅ Log success response
+      console.log("Registration Success:", data); 
 
       setMessage(data.message);
+       if (data.accessToken) { 
+                localStorage.setItem("token", data.accessToken); 
+            }
 
-       if (data.user && data.user.role) { // ✅ Ensure `user` exists in response
+       if (data.user && data.user.role) { 
         localStorage.setItem("role", data.user.role);
 
             if (data.user.role === "content_creator") {
-                navigate("/cc-dashboard"); // Redirect Content Creator
+                navigate("/cc-dashboard"); 
               } else {
                 console.log("Response Data:", data);
-                navigate("/user-dashboard"); // Redirect End User
+                navigate("/user-dashboard"); 
                 console.log("navigating to user-dashboard ");
 
             }
