@@ -1,10 +1,8 @@
 //CC PAGE
 import React, {useEffect, useState } from "react";
-import { createQuestion, getQuestions } from '../services/questionService.js'
+import { createQuestion, fetchQuestionsWithPagination } from '../services/questionService.js'
 
 const QuestionCreationPage = () => {
-
-    
 
     const [questionData, setQuestionData] = useState({
         question: '',
@@ -12,20 +10,28 @@ const QuestionCreationPage = () => {
         correctoptionIndex: 0
     });
 
-    const [ questions, setQuestions] = useState([]);
-    const [ showModal, setShowModal] = useState(false);
+    const [questions, setQuestions] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [isEditing, setIsEditing] = useState(second)
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCount, setTotalCount] = useState(0)
 
     console.log("questions", questions);
- 
+
     const fetchQuestions = async () =>{
         try {
-                const data = await getQuestions();
-                console.log("Fetched questions:", data[0].questions[2].id); 
-                console.log("Fetched questions:", data[0].questions[2].question); 
-                console.log("Fetched questions:", data[0].questions[2].correctoptionIndex); 
+                // const data = await getQuestions();
+                const data = await fetchQuestionsWithPagination(currentPage, pageSize);
+                setQuestions(data.questions);
+                setTotalPages(data.totalPages);
+                setTotalCount(data.totalCount);
+                console.log("dataaaaaaaaaa", data);
                 
-                if (Array.isArray(data[0]?.questions)) {
-                    const sortedQuestions = [...data[0].questions].sort((a, b) => 
+                if (Array.isArray(data?.questions)) {
+                    const sortedQuestions = [...data.questions].sort((a, b) => 
                         new Date(b.createdAt) - new Date(a.createdAt)
                     );
                     // setQuestions(data[0].questions);
@@ -35,14 +41,14 @@ const QuestionCreationPage = () => {
                     setQuestions([]);
                 }
             } catch (error) {
-                console.error("error fetchisng questions", error);
+                console.error("error fetching questions", error);
  
             }
-        };
+    };
 
     useEffect(() => {
         fetchQuestions();
-    },[]);
+    },[currentPage, pageSize]);
 
     const handleChange = (e , index = null) => {
         if (index !== null) {
@@ -55,14 +61,22 @@ const QuestionCreationPage = () => {
         }
     };
 
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
+
+    const handlePageSizeChange = (newSize) => {
+        setPageSize(newSize);
+        setCurrentPage(1);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             console.log(questionData,"questionssssss");
 
-            
-            const response = await createQuestion(questionData);
+            let response = await createQuestion(questionData);
             console.log("response in QuestionCreationPage" , response);
             
             if(response){
@@ -81,8 +95,34 @@ const QuestionCreationPage = () => {
         } catch (error) {
                 alert('Failed to create question ❌');
                 console.error('Error creating question:', error.response ? error.response.data : error.message);
-            }
         }
+    };
+
+    const handleEdit = (question) => {
+
+    };
+
+    const confirmDelete = (question) => {
+
+    };
+
+    const renderPagenumbers = () => {
+
+        const pageNumbers= [];
+        for (let i = 1;i <= totalPages; i++) {
+            pageNumbers.push(
+                <button 
+                key={i}
+                onClick={() => handlePageChange(i)}
+                style={currentPage === i ? styles.activePageButton : styles.pageButton}
+                >
+
+                {i}
+                </button>
+            );
+        }
+        return pageNumbers;
+    }
 
     return (
         <div style={styles.container}>
@@ -90,7 +130,19 @@ const QuestionCreationPage = () => {
             <h2 style={styles.subheading} >Created Questions</h2>
               
             {/* create question button  */}
-            <button onClick={()=>setShowModal(true)} style={styles.createButton}>Create Question</button>
+            <button onClick={()=>{
+                setIsEditing(false);
+                setCurrentEditId(null);
+                setQuestionData({
+                    question: '',
+                    options: ['', '', '', ''],
+                    correctoptionIndex: 0
+                }),
+            
+               
+                setShowModal(true)
+                
+                }} style={styles.createButton}>Create Question</button>
 
             {/* question list */}
             <div style={styles.questionList}>
@@ -100,7 +152,7 @@ const QuestionCreationPage = () => {
                          (
                         
                         <div key={q.id || index} style={styles.questionItem}>
-                            <h3>{q.question}</h3>
+                            <h3><p>{(currentPage - 1) * pageSize + index + 1}</p>{q.question}</h3>
                             {/* <p><strong>Options:</strong>{q.options && Array.isArray(q.options) ? q.options.join(', ') :'No options available'}</p>
                             <p><strong>Correct Option:</strong>{q.options && q.options[q.correctoptionIndex] ? q.options[q.correctoptionIndex]  : 'No correct option Added'}</p> */}
 
@@ -118,7 +170,6 @@ const QuestionCreationPage = () => {
                                     : 'No correct option Added'}
                             </p>
 
-
                         </div>
                     
                          ))
@@ -127,6 +178,38 @@ const QuestionCreationPage = () => {
                     )  
                 }
             </div>
+            {/* Pagination Controller  */}
+                {totalPages > 1 && (
+                    <div style={styles.paginationControls}>
+                        <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        style={styles.paginationButton}
+                        >
+                            Previous
+                        </button>
+                        {renderPagenumbers()}
+                        <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        style={styles.paginationButton}
+                        >
+                            Next
+                        </button>
+                        <select 
+                        value={pageSize}
+                        onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
+                        style={styles.pageSizeSelect}
+                        >
+                            <option value="10">10 per page</option>
+                            <option value="20">20 per page</option>
+                            <option value="50">50 per page</option>
+                        </select>
+                        <p style={styles.paginationInfo}>
+                            Page {currentPage} of {totalPages} (Total: {totalCount} questions)
+                        </p>
+                    </div>
+                )}
 
             {/* popup */}
 
@@ -136,7 +219,7 @@ const QuestionCreationPage = () => {
                 <div style={styles.modal}>
                     <form onSubmit={handleSubmit} style={styles.form}>
 
-                        <h2 style={styles.heading}>Create Question</h2>
+                        <h2 style={styles.heading}>{isEditing ? 'Edit Question' : 'Create Question'}</h2>
 
                         <input
                             type="text"
@@ -144,7 +227,8 @@ const QuestionCreationPage = () => {
                             placeholder="Enter question"
                             value={questionData.question}
                             onChange={handleChange}
-                        style={styles.input}
+                            style={styles.input}
+                            required
                         />
 
                         {questionData.options.map((option, index) => (
@@ -156,6 +240,7 @@ const QuestionCreationPage = () => {
                                 value={option}
                                 onChange={(e) => handleChange(e, index)}
                                 style={styles.input}
+                                required
                             />
                         ))}
 
@@ -172,9 +257,15 @@ const QuestionCreationPage = () => {
                             ))}
                         </select>
 
-                        <button type="submit" style={styles.button}>
-                            Save Question
-                        </button>
+
+                        <div>
+                            <button onClick={() => setShowModal(false)} type="submit" style={styles.button}>
+                                Cancel
+                            </button>
+                            <button type="submit" style={styles.button}>
+                                {isEditing ? 'Update Question ': 'Save Question'}
+                            </button>
+                        </div>
                     </form>
 
                 </div>
@@ -188,106 +279,108 @@ const QuestionCreationPage = () => {
 
 // ✅ Same CSS Styling as RegisterForm.jsx
 const styles = {
-    subheading: {
-        marginTop: '20px',
-        marginBottom: '10px',
-        alignSelf: 'center',
-        color: '#000C',
-        fontSize:'30px'
-    },
     container: {
-        padding:"20px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "Auto",
-        backgroundColor: "#f4f4f9",
+        padding: '20px',
     },
-    heading: {
-        textAlign: "center",
-        marginBottom: "20px",
-        color: "#333",
-    },
-    questionList: {
-        flex:1,
-        maxHeight: 'auto',
-        overflowY: 'auto',
-        padding: '10px',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
+    subheading: {
+        fontSize: '24px',
+        fontWeight: 'bold',
         marginBottom: '20px',
-        backgroundColor: '#fafafa',
-    },
-    questionItem: {
-        borderBottom: "1px solid #ddd",
-        padding: "10px",
     },
     createButton: {
-        padding: "10px",
-        backgroundColor: "#007BFF",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer",
-        fontSize: "18px",
-        marginBottom: "10px"
+        padding: '10px 15px',
+        backgroundColor: '#007bff',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        marginBottom: '20px',
+    },
+    questionList: {
+        marginBottom: '20px',
+    },
+    questionItem: {
+        border: '1px solid #ccc',
+        padding: '15px',
+        marginBottom: '10px',
+        borderRadius: '5px',
     },
     modalOverlay: {
-        position: "fixed",
+        position: 'fixed',
         top: 0,
         left: 0,
-        width: "100%",
-        height: "100%",
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     modal: {
-        backgroundColor: "#fff",
-        padding: "30px",
-        borderRadius: "8px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        width: "350px",
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '8px',
+        width: '80%',
+        maxWidth: '500px',
+    },
+    heading: {
+        fontSize: '20px',
+        marginBottom: '15px',
+        textAlign: 'center',
     },
     form: {
-        display: "flex",
-        flexDirection: "column",
+        display: 'flex',
+        flexDirection: 'column',
     },
     input: {
-        marginBottom: "15px",
-        padding: "10px",
-        borderRadius: "4px",
-        border: "1px solid #ccc",
-        fontSize: "16px",
+        padding: '10px',
+        marginBottom: '10px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+        fontSize: '16px',
     },
     select: {
-        marginBottom: "15px",
-        padding: "10px",
-        borderRadius: "4px",
-        border: "1px solid #ccc",
-        fontSize: "16px",
+        padding: '10px',
+        marginBottom: '15px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+        fontSize: '16px',
     },
     button: {
-        padding: "10px",
-        backgroundColor: "#4CAF50",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer",
-        fontSize: "16px",
-        marginTop: "10px",
+        padding: '10px 15px',
+        backgroundColor: '#28a745',
+        color: 'white',
+        border: 'none',
+        borderRadius: '5px',
+        cursor: 'pointer',
+        fontSize: '16px',
     },
-    cancelButton: {
-        padding: "10px",
-        backgroundColor: "#FF4D4D",
-        color: "#fff",
-        border: "none",
-        borderRadius: "4px",
-        cursor: "pointer",
-        fontSize: "16px",
-        marginTop: "10px",
+    paginationControls: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
+    },
+    paginationButton: {
+        padding: '8px 12px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        cursor: 'pointer',
+    },
+    activePageButton: {
+        backgroundColor: '#007bff',
+        color: 'white',
+        border: '1px solid #007bff',
+        borderRadius: '4px',
+        padding: '8px 12px',
+        cursor: 'pointer',
+    },
+    pageSizeSelect: {
+        padding: '8px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+    },
+    paginationInfo: {
+        marginLeft: 'auto',
     },
 };
 

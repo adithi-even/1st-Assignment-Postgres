@@ -62,21 +62,47 @@ export const getQuestionById = async (req, res) => {
 
 export const getQuestions = async (req, res ) => {
     try {
-        const questions = await Question.findAll({
+        const {page = 1, limit = 10 } = req.query;
+        const pageNumber = parseInt(page);
+        const pageSize = parseInt(limit);
+        const offset = (pageNumber - 1) * pageSize;
+        console.log('req.query', req.query);
+        
+
+        const { count, rows: questions } = await Question.findAndCountAll({
             include:[
                 {
                     model: Option,
                     as: 'options',
                     attributes: ['text', 'isCorrect', 'id'], // or include 'id' if needed
                 },
-            ]
+            ],
+            limit:parseInt(limit),
+            offset: offset,
+            distinct: true,
+            order: [['createdAt', 'DESC']]
         });
 
         if(!questions || questions.length === 0 ){
-            res.status(502).json({message:"Questions did not found "})
+            return res.status(200).json(
+                { 
+                    message: "No questions found on this page", 
+                    questions: [], 
+                    totalCount: 0, 
+                    currentPage: pageNumber, 
+                    totalPages: Math.ceil(count / pageSize) 
+                }
+            );
+
         }
         
-        res.status(200).json({message:"Questions fetched successfully " , questions});
+        res.status(200).json({
+            message:"Questions fetched successfully " , 
+            questions: questions,
+            totalCount: count,
+            currentPage: pageNumber,
+            totalPages: Math.ceil(count / pageSize),
+        });
 
     } catch (error) {
         res.status(501).json({message: "Couldn't find the question"});
