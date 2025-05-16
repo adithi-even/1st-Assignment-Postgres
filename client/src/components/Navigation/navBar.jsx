@@ -9,7 +9,7 @@ function Navbar() {
       const storedRole = localStorage.getItem('role');
       setRole(storedRole);
     
-    }, [])
+    }, [role])
     
 
     const handleLogout = () => {
