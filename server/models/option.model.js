@@ -29,6 +29,11 @@ const Option = sequelize.define(
             },
             onDelete: "CASCADE",
         },
+        order:{ 
+            type: DataTypes.INTEGER,
+            allowNull: false
+        } 
+        //adding this order field so that the optionsarray will get updated in the same order as it is added while updating 
 
     },{
         timestamps: false,

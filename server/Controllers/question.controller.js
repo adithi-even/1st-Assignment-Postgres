@@ -1,5 +1,7 @@
 import Question from "../models/question.model.js";
 import Option from "../models/option.model.js";
+import AssessmentQuestion from "../models/assessmentQuestions.model.js";
+import {Op, literal} from "sequelize";
 
 export const createQuestion = async (req, res) => {
     try {
@@ -18,7 +20,8 @@ export const createQuestion = async (req, res) => {
           const optionData  = options.map((text, index) => ({
             text,
             questionId: newQuestion.id,
-            isCorrect: index === correctoptionIndex
+            isCorrect: index === parseInt(correctoptionIndex),
+            order: index //while creaiting the questions also we are setting the order of the of th options also 
           }));
           await Option.bulkCreate(optionData);
         }
@@ -160,7 +163,8 @@ export const updateQuestion = async (req, res ) => {
             const optionData = options.map((text, index) => ({
                 text,
                 questionId: id,
-                isCorrect: index === correctoptionIndex
+                isCorrect: index === correctoptionIndex,
+                order : index //adding order here according to the index and while including it in the update question we are adding the order to be in the Ascending order 
 
             }));
             await Option.bulkCreate(optionData);
@@ -172,6 +176,7 @@ export const updateQuestion = async (req, res ) => {
                     model: Option,
                     as: 'options',
                     attributes: ['text', 'isCorrect', 'id'], // or include 'id' if needed
+                    order: [['order', 'ASC']] //this is the fix for the questions to apper in the order which they are updated while updating  the questions 
                 },
             ]
         });
@@ -183,3 +188,47 @@ export const updateQuestion = async (req, res ) => {
         throw error;
     }
 };
+
+export const searchQuestions = async (req, res) => {
+    try {
+        const { term } = req.query; // Get search term from query parameters
+        
+        if (!term) {
+            return res.status(400).json({ message: "Search term is required" });
+        }
+        
+        // Sanitize the search term to prevent SQL injection
+        const sanitizedTerm = term.replace(/'/g, "''");
+        
+        const { count, rows: questions } = await Question.findAndCountAll({
+            where: {
+                question: { [Op.iLike]: `%${sanitizedTerm}%` }
+            },
+            include: [
+                {
+                    model: Option,
+                    as: 'options',
+                    attributes: ['id', 'text', 'isCorrect'],
+                    required: false
+                }
+            ],
+            // pagination parameters
+            limit: parseInt(req.query.limit) || 10,
+            offset: ((parseInt(req.query.page) || 1) - 1) * (parseInt(req.query.limit) || 10),
+            distinct: true,
+            order: [['createdAt', 'DESC']]
+        });
+        
+        res.status(200).json({
+            message: "Search results fetched successfully",
+            questions: questions,
+            totalCount: count,
+            currentPage: parseInt(req.query.page) || 1,
+            totalPages: Math.ceil(count / (parseInt(req.query.limit) || 10)),
+        });
+    } catch (error) {
+        console.error("Search error:", error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
