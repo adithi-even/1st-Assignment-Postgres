@@ -1,5 +1,5 @@
 //CC PAGE
-import React, {useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { createQuestion, deleteQuestionById, fetchQuestionsWithPagination, searchQuestions, updateQuestionById } from '../services/questionService.js'
 
 const QuestionCreationPage = () => {
@@ -54,7 +54,7 @@ const QuestionCreationPage = () => {
                     setQuestions(sortedQuestions);
                     setTotalPages(data.totalPages);
                     setTotalCount(data.totalCount);
-                    console.log("dataaaaaaaaaa", data);
+                    console.log("data", data);
                 } else {
                     console.error("Data fetched is not an array:", data);
                     setQuestions([]);
@@ -250,7 +250,7 @@ const QuestionCreationPage = () => {
               </div>
 
               {isSearching && (
-                <div styles={styles.searchInfo}>
+                <div style={styles.searchInfo}>
                     <p>Showing results for: <strong>{searchTerm}</strong>
                      ({totalCount} questions found)</p>
                 </div>
@@ -410,7 +410,7 @@ const QuestionCreationPage = () => {
                         <h3>Confirm Delete</h3>
                         <p>Are you sure you want to delete this question ?</p>
                         <p style={styles.deleteQuestionPreview}>
-                            "{questionToDelete?.question}"
+                            {questionToDelete?.question}
                         </p>
 
                         <div>
